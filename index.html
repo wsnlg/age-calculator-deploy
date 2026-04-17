@@ -1,1 +1,1350 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>年龄计算器 - Age Calculator</title><script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.9/lunar.js"></script><style>:root{--bg-primary:#0f0f1a;--bg-secondary:#1a1a2e;--bg-card:#16213e;--bg-card-hover:#1a2745;--text-primary:#e8e8f0;--text-secondary:#a0a0b8;--text-muted:#6a6a80;--accent:#e94560;--accent-glow:rgba(233,69,96,0.3);--accent-secondary:#0f3460;--border:#2a2a40;--success:#00d2a0;--warning:#ffc107;--info:#4fc3f7;--gradient-1:linear-gradient(135deg,#e94560,#c23152);--gradient-2:linear-gradient(135deg,#0f3460,#1a4a8a);--gradient-3:linear-gradient(135deg,#16213e,#1a1a2e);--shadow:0 8px 32px rgba(0,0,0,0.3);--radius:16px;--radius-sm:10px;--transition:all 0.3s cubic-bezier(0.4,0,0.2,1)}[data-theme=light]{--bg-primary:#f0f2f5;--bg-secondary:#ffffff;--bg-card:#ffffff;--bg-card-hover:#f5f5f5;--text-primary:#1a1a2e;--text-secondary:#555570;--text-muted:#8888a0;--accent:#e94560;--accent-glow:rgba(233,69,96,0.15);--accent-secondary:#0f3460;--border:#e0e0e8;--shadow:0 8px 32px rgba(0,0,0,0.08)}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;transition:var(--transition);line-height:1.6}.header{text-align:center;padding:40px 20px 20px;position:relative}.header h1{font-size:2.2rem;font-weight:700;background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}.header p{color:var(--text-secondary);font-size:.95rem}.theme-toggle{position:absolute;top:20px;right:20px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-primary);width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:var(--transition)}.theme-toggle:hover{background:var(--bg-card-hover);transform:rotate(30deg)}.container{max-width:800px;margin:0 auto;padding:0 20px 60px}.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px;box-shadow:var(--shadow);transition:var(--transition)}.card:hover{border-color:var(--accent);box-shadow:var(--shadow),0 0 20px var(--accent-glow)}.card-title{font-size:1.05rem;font-weight:600;color:var(--text-secondary);margin-bottom:16px;display:flex;align-items:center;gap:8px}.card-title .icon{font-size:1.2rem}.calendar-switch{display:flex;background:var(--bg-primary);border-radius:var(--radius-sm);padding:4px;margin-bottom:20px}.calendar-switch button{flex:1;padding:10px 16px;border:none;border-radius:8px;background:0 0;color:var(--text-secondary);font-size:.95rem;font-weight:500;cursor:pointer;transition:var(--transition)}.calendar-switch button.active{background:var(--gradient-1);color:#fff;box-shadow:0 4px 12px var(--accent-glow)}.date-input-group{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}.date-field{flex:1;min-width:80px}.date-field label{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:6px;font-weight:500}.date-field input,.date-field select{width:100%;padding:10px 12px;background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:1rem;transition:var(--transition);appearance:none;-webkit-appearance:none}.date-field input:focus,.date-field select:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}.dual-calendar{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;padding:16px;background:var(--bg-primary);border-radius:var(--radius-sm)}.dual-calendar-item{text-align:center}.dual-calendar-item .label{font-size:.75rem;color:var(--text-muted);margin-bottom:4px}.dual-calendar-item .value{font-size:1rem;font-weight:600;color:var(--accent)}.dual-calendar-item .value.solar{color:var(--info)}.core-display{text-align:center;padding:30px 20px}.core-display .main-time{font-size:2rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;letter-spacing:1px}.core-display .main-time .unit{font-size:1rem;color:var(--text-secondary);font-weight:400;margin:0 2px}.core-display .sub-time{font-size:1.4rem;font-weight:600;color:var(--accent);margin-bottom:20px}.core-display .sub-time .unit{font-size:.85rem;color:var(--text-secondary);font-weight:400;margin:0 2px}.total-stats{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}.total-stat{text-align:center}.total-stat .number{font-size:1.3rem;font-weight:700;color:var(--info)}.total-stat .label{font-size:.75rem;color:var(--text-muted)}.birthday-countdown{display:grid;grid-template-columns:1fr 1fr;gap:16px}.birthday-item{padding:20px;background:var(--bg-primary);border-radius:var(--radius-sm);text-align:center;transition:var(--transition)}.birthday-item:hover{transform:translateY(-2px)}.birthday-item .type{font-size:.8rem;color:var(--text-muted);margin-bottom:8px}.birthday-item .days{font-size:2rem;font-weight:700;color:var(--warning)}.birthday-item .days .small{font-size:.9rem;font-weight:400;color:var(--text-secondary)}.birthday-item .date-info{font-size:.85rem;color:var(--text-secondary);margin-top:4px}.birthday-today{animation:celebrate 1s ease-in-out infinite alternate}@keyframes celebrate{from{transform:scale(1)}to{transform:scale(1.05)}}.zodiac-constellation{display:grid;grid-template-columns:1fr 1fr;gap:16px}.zodiac-item{padding:20px;background:var(--bg-primary);border-radius:var(--radius-sm);text-align:center}.zodiac-item .emoji{font-size:2.5rem;margin-bottom:8px}.zodiac-item .name{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin-bottom:4px}.zodiac-item .info{font-size:.8rem;color:var(--text-secondary)}.life-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.life-stat-item{padding:16px 12px;background:var(--bg-primary);border-radius:var(--radius-sm);text-align:center;transition:var(--transition)}.life-stat-item:hover{transform:translateY(-2px);background:var(--bg-card-hover)}.life-stat-item .stat-icon{font-size:1.5rem;margin-bottom:6px}.life-stat-item .stat-value{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:2px;word-break:break-all}.life-stat-item .stat-label{font-size:.7rem;color:var(--text-muted)}.progress-section{text-align:center}.progress-ring-container{position:relative;width:200px;height:200px;margin:0 auto 20px}.progress-ring{width:200px;height:200px;transform:rotate(-90deg)}.progress-ring-bg{fill:none;stroke:var(--border);stroke-width:12}.progress-ring-fill{fill:none;stroke:url(#progressGradient);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1s ease}.progress-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}.progress-text .percentage{font-size:2.2rem;font-weight:700;color:var(--text-primary)}.progress-text .percentage-sign{font-size:1.2rem;color:var(--text-secondary)}.progress-text .stage{font-size:.85rem;color:var(--accent);font-weight:500;margin-top:4px}.life-expectancy-control{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}.life-expectancy-control label{font-size:.85rem;color:var(--text-secondary)}.life-expectancy-control input{width:80px;padding:6px 10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:1rem;text-align:center}.life-expectancy-control input:focus{outline:0;border-color:var(--accent)}.life-expectancy-control span{font-size:.85rem;color:var(--text-muted)}.stage-bar{display:flex;border-radius:var(--radius-sm);overflow:hidden;height:8px;margin-top:16px}.stage-bar div{height:100%;transition:var(--transition)}.stage-labels{display:flex;justify-content:space-between;margin-top:8px;font-size:.7rem;color:var(--text-muted)}.placeholder{text-align:center;padding:40px 20px;color:var(--text-muted)}.placeholder .icon{font-size:3rem;margin-bottom:12px}.placeholder p{font-size:.95rem}@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.card{animation:fadeInUp .5s ease forwards}.card:nth-child(2){animation-delay:.1s}.card:nth-child(3){animation-delay:.2s}.card:nth-child(4){animation-delay:.3s}.card:nth-child(5){animation-delay:.4s}.card:nth-child(6){animation-delay:.5s}@media (max-width:600px){.header h1{font-size:1.7rem}.card{padding:18px}.core-display .main-time{font-size:1.5rem}.core-display .sub-time{font-size:1.1rem}.life-stats{grid-template-columns:repeat(2,1fr)}.date-input-group{gap:8px}.date-field{min-width:60px}.total-stats{gap:16px}.birthday-countdown,.zodiac-constellation{grid-template-columns:1fr}.progress-ring-container{width:160px;height:160px}.progress-ring{width:160px;height:160px}}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-primary)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}.num-animate{display:inline-block;transition:transform .3s ease}.num-animate.changed{animation:numPop .3s ease}@keyframes numPop{0%{transform:scale(1)}50%{transform:scale(1.15);color:var(--accent)}100%{transform:scale(1)}}.hidden{display:none!important}</style><script>document.addEventListener('contextmenu',function(e){e.preventDefault()});document.addEventListener('selectstart',function(e){e.preventDefault()});document.addEventListener('keydown',function(e){if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'))||(e.ctrlKey&&e.key==='u')){e.preventDefault()}});</script></head><body><div class="header"><button class="theme-toggle" onclick="toggleTheme()" title="切换主题">🌙</button><h1>🕐 年龄计算器</h1><p>输入你的出生日期，精确计算你活过的每一秒</p></div><div class="container"><div class="card" id="inputCard"><div class="card-title"><span class="icon">📅</span> 选择出生日期</div><div class="calendar-switch"><button class="active" onclick="switchCalendar('solar')" id="btnSolar">☀️ 阳历（公历）</button> <button onclick="switchCalendar('lunar')" id="btnLunar">🌙 农历（阴历）</button></div><div class="date-input-group"><div class="date-field"><label>年</label> <select id="yearSelect" onchange="onDateChange()"></select></div><div class="date-field"><label>月</label> <select id="monthSelect" onchange="onMonthChange()"></select></div><div class="date-field"><label>日</label> <select id="daySelect" onchange="onDateChange()"></select></div><div class="date-field"><label>时（可选）</label> <select id="hourSelect" onchange="onDateChange()"><option value="-1">--</option></select></div><div class="date-field"><label>分（可选）</label> <select id="minuteSelect" onchange="onDateChange()"><option value="-1">--</option></select></div></div><div class="dual-calendar" id="dualCalendar"><div class="dual-calendar-item"><div class="label">☀️ 阳历</div><div class="value solar" id="solarDisplay">请选择日期</div></div><div class="dual-calendar-item"><div class="label">🌙 农历</div><div class="value" id="lunarDisplay">请选择日期</div></div></div></div><div class="card hidden" id="coreCard"><div class="card-title"><span class="icon">⏱️</span> 你已经活了多久</div><div class="core-display"><div class="main-time" id="mainTime"></div><div class="sub-time" id="subTime"></div><div class="total-stats" id="totalStats"></div></div></div><div class="card hidden" id="birthdayCard"><div class="card-title"><span class="icon">🎂</span> 生日倒计时</div><div class="birthday-countdown" id="birthdayCountdown"></div></div><div class="card hidden" id="zodiacCard"><div class="card-title"><span class="icon">✨</span> 星座 & 生肖</div><div class="zodiac-constellation" id="zodiacConstellation"></div></div><div class="card hidden" id="lifeStatsCard"><div class="card-title"><span class="icon">📊</span> 生命统计数据（估算）</div><div class="life-stats" id="lifeStats"></div></div><div class="card hidden" id="progressCard"><div class="card-title"><span class="icon">📈</span> 生命进度</div><div class="progress-section"><div class="life-expectancy-control"><label>预期寿命：</label> <input type="number" id="lifeExpectancy" value="75" min="1" max="150" onchange="updateProgress()"> <span>岁</span></div><div class="progress-ring-container"><svg class="progress-ring" viewBox="0 0 200 200"><defs><linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#e94560"/><stop offset="100%" style="stop-color:#0f3460"/></linearGradient></defs><circle class="progress-ring-bg" cx="100" cy="100" r="85"/><circle class="progress-ring-fill" id="progressCircle" cx="100" cy="100" r="85" stroke-dasharray="534.07" stroke-dashoffset="534.07"/></svg><div class="progress-text"><div><span class="percentage" id="progressPercent">0</span><span class="percentage-sign">%</span></div><div class="stage" id="lifeStage">--</div></div></div><div class="stage-bar"><div style="width:8%;background:#4fc3f7" title="幼年 0-6岁"></div><div style="width:14.7%;background:#00d2a0" title="少年 7-17岁"></div><div style="width:24%;background:#ffc107" title="青年 18-35岁"></div><div style="width:26.7%;background:#e94560" title="中年 36-55岁"></div><div style="width:26.6%;background:#9c27b0" title="老年 56+岁"></div></div><div class="stage-labels"><span>幼年</span><span>少年</span><span>青年</span><span>中年</span><span>老年</span></div></div></div></div><script>let e="solar",t=null,n=0,a=0,l=0,o=!1,i=-1,c=-1,s=null,r=-1;function d(){u(),m(),g(),v(),$()}function u(){const e=document.getElementById("yearSelect");for(let t=(new Date).getFullYear();t>=1900;t--){const n=document.createElement("option");n.value=t,n.textContent=t+"年",e.appendChild(n)}}function m(){const e=document.getElementById("hourSelect");for(let t=0;t<24;t++){const n=document.createElement("option");n.value=t,n.textContent=(t<10?"0":"")+t+"时",e.appendChild(n)}}function g(){const e=document.getElementById("minuteSelect");for(let t=0;t<60;t++){const n=document.createElement("option");n.value=t,n.textContent=(t<10?"0":"")+t+"分",e.appendChild(n)}}function v(){document.getElementById("yearSelect").value="1995",y(),document.getElementById("monthSelect").value="1",p(),document.getElementById("daySelect").value="1"}function h(t){e=t,document.getElementById("btnSolar").classList.toggle("active","solar"===t),document.getElementById("btnLunar").classList.toggle("active","lunar"===t),y(),document.getElementById("monthSelect").value="1",p(),document.getElementById("daySelect").value="1",$()}function y(){const t=document.getElementById("monthSelect");if(t.innerHTML="","solar"===e)for(let e=1;e<=12;e++){const n=document.createElement("option");n.value=e,n.textContent=e+"月",t.appendChild(n)}else f(parseInt(document.getElementById("yearSelect").value)).forEach(e=>{const n=document.createElement("option");n.value=e.value,n.textContent=e.label,t.appendChild(n)})}function f(e){const t=[];try{const n=Solar.fromYmd(e,1,1).getLunar().getYearLeapMonth();for(let e=1;e<=12;e++)t.push({value:e+"",label:e+"月",isLeap:!1}),n===e&&t.push({value:e+"_leap",label:"闰"+e+"月",isLeap:!0})}catch(e){for(let e=1;e<=12;e++)t.push({value:e+"",label:e+"月",isLeap:!1})}return t}function p(){const t=document.getElementById("daySelect");t.innerHTML="";const n=parseInt(document.getElementById("yearSelect").value),a=document.getElementById("monthSelect").value;let l=30;l="solar"===e?new Date(n,parseInt(a),0).getDate():I(n,a);for(let e=1;e<=l;e++){const n=document.createElement("option");n.value=e,n.textContent=e+"日",t.appendChild(n)}}function I(e,t){try{const n=t.endsWith("_leap"),a=parseInt(t);for(let t=30;t>=1;t--)try{return Lunar.fromYmd(e,a,t,n).getSolar(),t}catch(e){continue}}catch(e){}return 30}function E(){p(),document.getElementById("daySelect").value="1",$()}function $(){const s=parseInt(document.getElementById("yearSelect").value),r=document.getElementById("monthSelect").value,d=parseInt(document.getElementById("daySelect").value);i=parseInt(document.getElementById("hourSelect").value),c=parseInt(document.getElementById("minuteSelect").value);try{if("solar"===e){const e=parseInt(r);t=new Date(s,e-1,d,i>=0?i:0,c>=0?c:0,0);const u=Solar.fromYmd(s,e,d).getLunar();n=u.getYear(),a=u.getMonth(),l=u.getDay(),o=!1,M(`${s}年${e}月${d}日`,`${u.getYearInChinese()}年${u.getMonthInChinese()}月${u.getDayInChinese()}`)}else{const e=r.endsWith("_leap"),u=parseInt(r);n=s,a=u,l=d,o=e;const m=Lunar.fromYmd(s,u,d,e),g=m.getSolar();t=new Date(g.getYear(),g.getMonth()-1,g.getDay(),i>=0?i:0,c>=0?c:0,0),M(`${g.getYear()}年${g.getMonth()}月${g.getDay()}日`,`${m.getYearInChinese()}年${m.getMonthInChinese()}月${m.getDayInChinese()}`)}S(),b()}catch(e){console.error("Date conversion error:",e)}}function M(e,t){document.getElementById("solarDisplay").textContent=e,document.getElementById("lunarDisplay").textContent=t}function S(){["coreCard","birthdayCard","zodiacCard","lifeStatsCard","progressCard"].forEach(e=>{document.getElementById(e).classList.remove("hidden")})}function b(){s&&clearInterval(s),C(),s=setInterval(C,1e3)}function C(){if(!t)return;const e=new Date;e<=t||(B(e),D(e),T(e),F())}function B(e){const n=e.getTime()-t.getTime();let a=e.getFullYear()-t.getFullYear(),l=e.getMonth()-t.getMonth(),o=e.getDate()-t.getDate(),s=e.getHours()-(i>=0?i:0),d=e.getMinutes()-(c>=0?c:0),u=e.getSeconds();u<0&&(u+=60,d--),d<0&&(d+=60,s--),s<0&&(s+=24,o--),o<0&&(o+=new Date(e.getFullYear(),e.getMonth(),0).getDate(),l--),l<0&&(l+=12,a--);const m=document.getElementById("mainTime"),g=`${a}<span class="unit">年</span>${l}<span class="unit">月</span>${o}<span class="unit">日</span>`;m.innerHTML!==g&&(m.innerHTML=g);const v=document.getElementById("subTime"),h=`${s<10?"0"+s:s}<span class="unit">时</span>${d<10?"0"+d:d}<span class="unit">分</span>${u<10?"0"+u:u}<span class="unit">秒</span>`;r!==u&&(v.innerHTML=h,r=u);const y=Math.floor(n/1e3),f=Math.floor(y/60),p=Math.floor(f/60),I=Math.floor(p/24);document.getElementById("totalStats").innerHTML=`\n                <div class="total-stat">\n                    <div class="number">${I.toLocaleString()}</div>\n                    <div class="label">总天数</div>\n                </div>\n                <div class="total-stat">\n                    <div class="number">${p.toLocaleString()}</div>\n                    <div class="label">总小时</div>\n                </div>\n                <div class="total-stat">\n                    <div class="number">${f.toLocaleString()}</div>\n                    <div class="label">总分钟</div>\n                </div>\n                <div class="total-stat">\n                    <div class="number">${y.toLocaleString()}</div>\n                    <div class="label">总秒数</div>\n                </div>\n            `}function D(e){const n=document.getElementById("birthdayCountdown"),a=L(e,t.getMonth(),t.getDate()),l=Math.ceil((a.getTime()-e.getTime())/864e5),o=0===l,i=Y(e),c=Math.ceil((i.solarDate.getTime()-e.getTime())/864e5),s=0===c,r=a.getFullYear()-t.getFullYear();n.innerHTML=`\n                <div class="birthday-item ${o?"birthday-today":""}">\n                    <div class="type">☀️ 阳历生日</div>\n                    <div class="days">${o?"🎂 今天！":l+'<span class="small"> 天</span>'}</div>\n                    <div class="date-info">${o?"生日快乐！🎉":a.getFullYear()+"年"+(a.getMonth()+1)+"月"+a.getDate()+"日"}</div>\n                    ${!o&&l<=30?'<div class="date-info" style="color:var(--accent);margin-top:4px">再过'+l+"天你就"+r+"岁啦！</div>":""}\n                </div>\n                <div class="birthday-item ${s?"birthday-today":""}">\n                    <div class="type">🌙 农历生日</div>\n                    <div class="days">${s?"🎂 今天！":c+'<span class="small"> 天</span>'}</div>\n                    <div class="date-info">${s?"农历生日快乐！🎉":i.lunarStr}</div>\n                </div>\n            `}function L(e,t,n){let a=new Date(e.getFullYear(),t,n);return a<=e&&(a=new Date(e.getFullYear()+1,t,n)),a}function Y(e){const t=e.getFullYear();for(let n=t;n<=t+2;n++)try{const t=Lunar.fromYmd(n,a,l,o),i=t.getSolar(),c=new Date(i.getYear(),i.getMonth()-1,i.getDay());if(c>e)return{solarDate:c,lunarStr:`${t.getYearInChinese()}年${t.getMonthInChinese()}月${t.getDayInChinese()}`}}catch(e){continue}return{solarDate:new Date(t+1,0,1),lunarStr:"无法计算"}}function x(){const e=document.getElementById("zodiacConstellation"),n=t.getFullYear(),a=t.getMonth()+1,l=t.getDate(),o=Solar.fromYmd(n,a,l),i=o.getLunar().getYearShengXiao(),c=["鼠","牛","虎","兔","龙","蛇","马","羊","猴","鸡","狗","猪"].indexOf(i),s=o.getXingZuo(),r={"白羊座":{emoji:"♈",range:"3/21-4/19",element:"火",trait:"热情、冲动、勇敢"},"金牛座":{emoji:"♉",range:"4/20-5/20",element:"土",trait:"稳重、务实、耐心"},"双子座":{emoji:"♊",range:"5/21-6/21",element:"风",trait:"机智、善变、好奇"},"巨蟹座":{emoji:"♋",range:"6/22-7/22",element:"水",trait:"温柔、敏感、顾家"},"狮子座":{emoji:"♌",range:"7/23-8/22",element:"火",trait:"自信、大方、领导力"},"处女座":{emoji:"♍",range:"8/23-9/22",element:"土",trait:"细致、完美主义、勤奋"},"天秤座":{emoji:"♎",range:"9/23-10/23",element:"风",trait:"优雅、公正、社交"},"天蝎座":{emoji:"♏",range:"10/24-11/22",element:"水",trait:"神秘、深沉、洞察力"},"射手座":{emoji:"♐",range:"11/23-12/21",element:"火",trait:"乐观、自由、冒险"},"摩羯座":{emoji:"♑",range:"12/22-1/19",element:"土",trait:"踏实、有野心、自律"},"水瓶座":{emoji:"♒",range:"1/20-2/18",element:"风",trait:"独立、创新、人道主义"},"双鱼座":{emoji:"♓",range:"2/19-3/20",element:"水",trait:"浪漫、善良、直觉强"}}[s]||{emoji:"⭐",range:"",element:"",trait:""};e.innerHTML=`\n                <div class="zodiac-item">\n                    <div class="emoji">${r.emoji}</div>\n                    <div class="name">${s}</div>\n                    <div class="info">${r.range}</div>\n                    <div class="info">${r.element}象星座</div>\n                    <div class="info" style="margin-top:4px;color:var(--accent)">${r.trait}</div>\n                </div>\n                <div class="zodiac-item">\n                    <div class="emoji">${c>=0?["🐭","🐮","🐯","🐰","🐲","🐍","🐴","🐑","🐵","🐔","🐶","🐷"][c]:"🐾"}</div>\n                    <div class="name">${i}年</div>\n                    <div class="info">十二生肖</div>\n                    <div class="info" style="margin-top:4px;color:var(--accent)">${c>=0?["机智灵活、适应力强","勤劳踏实、坚韧不拔","勇敢自信、充满活力","温和善良、心思细腻","气宇轩昂、领导才能","智慧深沉、直觉敏锐","热情奔放、自由独立","温文尔雅、富有艺术感","聪明伶俐、幽默风趣","勤奋守时、责任心强","忠诚正直、勇敢无畏","豁达乐观、真诚待人"][c]:""}</div>\n                </div>\n            `}function T(e){const n=e.getTime()-t.getTime(),a=Math.floor(n/6e4),l=(Math.floor(n/36e5),Math.floor(n/864e5)),o=[{icon:"❤️",value:j(Math.floor(72*a)),label:"心跳次数（约）"},{icon:"💨",value:j(Math.floor(17*a)),label:"呼吸次数（约）"},{icon:"👁️",value:j(Math.floor(17*a)),label:"眨眼次数（约）"},{icon:"😴",value:j(Math.floor(l/3))+" 天",label:"睡眠时长（约）"},{icon:"🍽️",value:j(3*l)+" 顿",label:"吃饭次数（约）"},{icon:"🚶",value:j(7e3*l)+" 步",label:"走路步数（约）"},{icon:"🌕",value:Math.floor(l/29.5)+" 次",label:"月亮圆缺"},{icon:"🌍",value:e.getFullYear()-t.getFullYear()+" 圈",label:"地球公转"},{icon:"🌅",value:j(l)+" 次",label:"日出日落"}];document.getElementById("lifeStats").innerHTML=o.map(e=>`\n                <div class="life-stat-item">\n                    <div class="stat-icon">${e.icon}</div>\n                    <div class="stat-value">${e.value}</div>\n                    <div class="stat-label">${e.label}</div>\n                </div>\n            `).join("")}function j(e){return e>=1e8?(e/1e8).toFixed(2)+" 亿":e>=1e4?(e/1e4).toFixed(1)+" 万":e.toLocaleString()}function F(){if(!t)return;const e=new Date,n=parseInt(document.getElementById("lifeExpectancy").value)||75,a=e.getTime()-t.getTime(),l=365.25*n*24*3600*1e3,o=Math.min(100,Math.max(0,a/l*100)),i=document.getElementById("progressCircle"),c=2*Math.PI*85,s=c-o/100*c;i.style.strokeDashoffset=s,document.getElementById("progressPercent").textContent=o.toFixed(2);const r=a/315576e5;let d="";d=r<6?"👶 幼年":r<17?"📚 少年":r<35?"🌟 青年":r<55?"💼 中年":"🍵 老年",document.getElementById("lifeStage").textContent=d}function w(){const e=document.body,t=document.querySelector(".theme-toggle");"light"===e.getAttribute("data-theme")?(e.removeAttribute("data-theme"),t.textContent="🌙"):(e.setAttribute("data-theme","light"),t.textContent="☀️")}document.addEventListener("visibilitychange",function(){document.hidden?s&&(clearInterval(s),s=null):t&&b()});const H=C;C=function(){H(),x()},d();</script></body></html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>年龄计算器 - Age Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.9/lunar.js"></script>
+    <style>
+        /* ========== CSS Variables & Theme ========== */
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-card-hover: #1a2745;
+            --text-primary: #e8e8f0;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6a6a80;
+            --accent: #e94560;
+            --accent-glow: rgba(233, 69, 96, 0.3);
+            --accent-secondary: #0f3460;
+            --border: #2a2a40;
+            --success: #00d2a0;
+            --warning: #ffc107;
+            --info: #4fc3f7;
+            --gradient-1: linear-gradient(135deg, #e94560, #c23152);
+            --gradient-2: linear-gradient(135deg, #0f3460, #1a4a8a);
+            --gradient-3: linear-gradient(135deg, #16213e, #1a1a2e);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f5f5f5;
+            --text-primary: #1a1a2e;
+            --text-secondary: #555570;
+            --text-muted: #8888a0;
+            --accent: #e94560;
+            --accent-glow: rgba(233, 69, 96, 0.15);
+            --accent-secondary: #0f3460;
+            --border: #e0e0e8;
+            --success: #00b386;
+            --warning: #f0a500;
+            --info: #2196f3;
+            --gradient-1: linear-gradient(135deg, #e94560, #c23152);
+            --gradient-2: linear-gradient(135deg, #4fc3f7, #2196f3);
+            --gradient-3: linear-gradient(135deg, #f0f2f5, #e8eaf0);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ========== Reset & Base ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        /* ========== Header ========== */
+        .header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-card-hover);
+            transform: rotate(30deg);
+        }
+
+        /* ========== Container ========== */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        /* ========== Card ========== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow), 0 0 20px var(--accent-glow);
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .icon {
+            font-size: 1.2rem;
+        }
+
+        /* ========== Calendar Type Switch ========== */
+        .calendar-switch {
+            display: flex;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .calendar-switch button {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .calendar-switch button.active {
+            background: var(--gradient-1);
+            color: #fff;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        /* ========== Date Input ========== */
+        .date-input-group {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .date-field {
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .date-field label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .date-field select,
+        .date-field input {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition);
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .date-field select:focus,
+        .date-field input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        /* ========== Dual Calendar Display ========== */
+        .dual-calendar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+        }
+
+        .dual-calendar-item {
+            text-align: center;
+        }
+
+        .dual-calendar-item .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .dual-calendar-item .value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .dual-calendar-item .value.solar {
+            color: var(--info);
+        }
+
+        /* ========== Core Display ========== */
+        .core-display {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .core-display .main-time {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .core-display .main-time .unit {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin: 0 2px;
+        }
+
+        .core-display .sub-time {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .core-display .sub-time .unit {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin: 0 2px;
+        }
+
+        .total-stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .total-stat {
+            text-align: center;
+        }
+
+        .total-stat .number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--info);
+        }
+
+        .total-stat .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* ========== Birthday Countdown ========== */
+        .birthday-countdown {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .birthday-item {
+            padding: 20px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .birthday-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .birthday-item .type {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .birthday-item .days {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--warning);
+        }
+
+        .birthday-item .days .small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .birthday-item .date-info {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .birthday-today {
+            animation: celebrate 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes celebrate {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        /* ========== Zodiac & Constellation ========== */
+        .zodiac-constellation {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .zodiac-item {
+            padding: 20px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            text-align: center;
+        }
+
+        .zodiac-item .emoji {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        .zodiac-item .name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .zodiac-item .info {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* ========== Life Stats Grid ========== */
+        .life-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .life-stat-item {
+            padding: 16px 12px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .life-stat-item:hover {
+            transform: translateY(-2px);
+            background: var(--bg-card-hover);
+        }
+
+        .life-stat-item .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+        }
+
+        .life-stat-item .stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 2px;
+            word-break: break-all;
+        }
+
+        .life-stat-item .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* ========== Life Progress ========== */
+        .progress-section {
+            text-align: center;
+        }
+
+        .progress-ring-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+        }
+
+        .progress-ring {
+            width: 200px;
+            height: 200px;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 12;
+        }
+
+        .progress-ring-fill {
+            fill: none;
+            stroke: url(#progressGradient);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-text .percentage {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .progress-text .percentage-sign {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-text .stage {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .life-expectancy-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .life-expectancy-control label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .life-expectancy-control input {
+            width: 80px;
+            padding: 6px 10px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .life-expectancy-control input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .life-expectancy-control span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .stage-bar {
+            display: flex;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            height: 8px;
+            margin-top: 16px;
+        }
+
+        .stage-bar div {
+            height: 100%;
+            transition: var(--transition);
+        }
+
+        .stage-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* ========== Placeholder State ========== */
+        .placeholder {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        .placeholder p {
+            font-size: 0.95rem;
+        }
+
+        /* ========== Animations ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.3s; }
+        .card:nth-child(5) { animation-delay: 0.4s; }
+        .card:nth-child(6) { animation-delay: 0.5s; }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.7rem;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .core-display .main-time {
+                font-size: 1.5rem;
+            }
+
+            .core-display .sub-time {
+                font-size: 1.1rem;
+            }
+
+            .life-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .date-input-group {
+                gap: 8px;
+            }
+
+            .date-field {
+                min-width: 60px;
+            }
+
+            .total-stats {
+                gap: 16px;
+            }
+
+            .birthday-countdown,
+            .zodiac-constellation {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-ring-container {
+                width: 160px;
+                height: 160px;
+            }
+
+            .progress-ring {
+                width: 160px;
+                height: 160px;
+            }
+        }
+
+        /* ========== Scrollbar ========== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* ========== Number animation ========== */
+        .num-animate {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .num-animate.changed {
+            animation: numPop 0.3s ease;
+        }
+
+        @keyframes numPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); color: var(--accent); }
+            100% { transform: scale(1); }
+        }
+
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <button class="theme-toggle" onclick="toggleTheme()" title="切换主题">🌙</button>
+        <h1>🕐 年龄计算器</h1>
+        <p>输入你的出生日期，精确计算你活过的每一秒</p>
+    </div>
+
+    <div class="container">
+        <!-- Input Card -->
+        <div class="card" id="inputCard">
+            <div class="card-title"><span class="icon">📅</span> 选择出生日期</div>
+
+            <!-- Calendar Type Switch -->
+            <div class="calendar-switch">
+                <button class="active" onclick="switchCalendar('solar')" id="btnSolar">☀️ 阳历（公历）</button>
+                <button onclick="switchCalendar('lunar')" id="btnLunar">🌙 农历（阴历）</button>
+            </div>
+
+            <!-- Date Input -->
+            <div class="date-input-group">
+                <div class="date-field">
+                    <label>年</label>
+                    <select id="yearSelect" onchange="onDateChange()"></select>
+                </div>
+                <div class="date-field">
+                    <label>月</label>
+                    <select id="monthSelect" onchange="onMonthChange()"></select>
+                </div>
+                <div class="date-field">
+                    <label>日</label>
+                    <select id="daySelect" onchange="onDateChange()"></select>
+                </div>
+                <div class="date-field">
+                    <label>时（可选）</label>
+                    <select id="hourSelect" onchange="onDateChange()">
+                        <option value="-1">--</option>
+                    </select>
+                </div>
+                <div class="date-field">
+                    <label>分（可选）</label>
+                    <select id="minuteSelect" onchange="onDateChange()">
+                        <option value="-1">--</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dual Calendar Display -->
+            <div class="dual-calendar" id="dualCalendar">
+                <div class="dual-calendar-item">
+                    <div class="label">☀️ 阳历</div>
+                    <div class="value solar" id="solarDisplay">请选择日期</div>
+                </div>
+                <div class="dual-calendar-item">
+                    <div class="label">🌙 农历</div>
+                    <div class="value" id="lunarDisplay">请选择日期</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Display Card -->
+        <div class="card hidden" id="coreCard">
+            <div class="card-title"><span class="icon">⏱️</span> 你已经活了多久</div>
+            <div class="core-display">
+                <div class="main-time" id="mainTime"></div>
+                <div class="sub-time" id="subTime"></div>
+                <div class="total-stats" id="totalStats"></div>
+            </div>
+        </div>
+
+        <!-- Birthday Countdown Card -->
+        <div class="card hidden" id="birthdayCard">
+            <div class="card-title"><span class="icon">🎂</span> 生日倒计时</div>
+            <div class="birthday-countdown" id="birthdayCountdown"></div>
+        </div>
+
+        <!-- Zodiac & Constellation Card -->
+        <div class="card hidden" id="zodiacCard">
+            <div class="card-title"><span class="icon">✨</span> 星座 & 生肖</div>
+            <div class="zodiac-constellation" id="zodiacConstellation"></div>
+        </div>
+
+        <!-- Life Stats Card -->
+        <div class="card hidden" id="lifeStatsCard">
+            <div class="card-title"><span class="icon">📊</span> 生命统计数据（估算）</div>
+            <div class="life-stats" id="lifeStats"></div>
+        </div>
+
+        <!-- Life Progress Card -->
+        <div class="card hidden" id="progressCard">
+            <div class="card-title"><span class="icon">📈</span> 生命进度</div>
+            <div class="progress-section">
+                <div class="life-expectancy-control">
+                    <label>预期寿命：</label>
+                    <input type="number" id="lifeExpectancy" value="75" min="1" max="150" onchange="updateProgress()">
+                    <span>岁</span>
+                </div>
+                <div class="progress-ring-container">
+                    <svg class="progress-ring" viewBox="0 0 200 200">
+                        <defs>
+                            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#e94560"/>
+                                <stop offset="100%" style="stop-color:#0f3460"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-ring-bg" cx="100" cy="100" r="85"/>
+                        <circle class="progress-ring-fill" id="progressCircle" cx="100" cy="100" r="85"
+                            stroke-dasharray="534.07" stroke-dashoffset="534.07"/>
+                    </svg>
+                    <div class="progress-text">
+                        <div><span class="percentage" id="progressPercent">0</span><span class="percentage-sign">%</span></div>
+                        <div class="stage" id="lifeStage">--</div>
+                    </div>
+                </div>
+                <div class="stage-bar">
+                    <div style="width:8%;background:#4fc3f7" title="幼年 0-6岁"></div>
+                    <div style="width:14.7%;background:#00d2a0" title="少年 7-17岁"></div>
+                    <div style="width:24%;background:#ffc107" title="青年 18-35岁"></div>
+                    <div style="width:26.7%;background:#e94560" title="中年 36-55岁"></div>
+                    <div style="width:26.6%;background:#9c27b0" title="老年 56+岁"></div>
+                </div>
+                <div class="stage-labels">
+                    <span>幼年</span><span>少年</span><span>青年</span><span>中年</span><span>老年</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== State ==========
+        let calendarType = 'solar'; // 'solar' or 'lunar'
+        let birthSolarDate = null;   // Date object for solar birth
+        let birthLunarYear = 0;
+        let birthLunarMonth = 0;
+        let birthLunarDay = 0;
+        let birthLunarIsLeapMonth = false;
+        let birthHour = -1;
+        let birthMinute = -1;
+        let updateTimer = null;
+        let prevSeconds = -1;
+
+        // ========== Initialization ==========
+        function init() {
+            populateYears();
+            populateHours();
+            populateMinutes();
+            setDefaultDate();
+            onDateChange();
+        }
+
+        function populateYears() {
+            const sel = document.getElementById('yearSelect');
+            const currentYear = new Date().getFullYear();
+            for (let y = currentYear; y >= 1900; y--) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y + '年';
+                sel.appendChild(opt);
+            }
+        }
+
+        function populateHours() {
+            const sel = document.getElementById('hourSelect');
+            for (let h = 0; h < 24; h++) {
+                const opt = document.createElement('option');
+                opt.value = h;
+                opt.textContent = (h < 10 ? '0' : '') + h + '时';
+                sel.appendChild(opt);
+            }
+        }
+
+        function populateMinutes() {
+            const sel = document.getElementById('minuteSelect');
+            for (let m = 0; m < 60; m++) {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = (m < 10 ? '0' : '') + m + '分';
+                sel.appendChild(opt);
+            }
+        }
+
+        function setDefaultDate() {
+            document.getElementById('yearSelect').value = '1995';
+            populateMonths();
+            document.getElementById('monthSelect').value = '1';
+            populateDays();
+            document.getElementById('daySelect').value = '1';
+        }
+
+        // ========== Calendar Switch ==========
+        function switchCalendar(type) {
+            calendarType = type;
+            document.getElementById('btnSolar').classList.toggle('active', type === 'solar');
+            document.getElementById('btnLunar').classList.toggle('active', type === 'lunar');
+            populateMonths();
+            document.getElementById('monthSelect').value = '1';
+            populateDays();
+            document.getElementById('daySelect').value = '1';
+            onDateChange();
+        }
+
+        // ========== Populate Months ==========
+        function populateMonths() {
+            const sel = document.getElementById('monthSelect');
+            sel.innerHTML = '';
+            if (calendarType === 'solar') {
+                for (let m = 1; m <= 12; m++) {
+                    const opt = document.createElement('option');
+                    opt.value = m;
+                    opt.textContent = m + '月';
+                    sel.appendChild(opt);
+                }
+            } else {
+                const year = parseInt(document.getElementById('yearSelect').value);
+                // Get lunar months for this year (including leap months)
+                const months = getLunarMonths(year);
+                months.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.value;
+                    opt.textContent = m.label;
+                    sel.appendChild(opt);
+                });
+            }
+        }
+
+        function getLunarMonths(year) {
+            const months = [];
+            // Use lunar-javascript to get leap month info
+            try {
+                const solar = Solar.fromYmd(year, 1, 1);
+                const lunar = solar.getLunar();
+                const leapMonth = lunar.getYearLeapMonth();
+                for (let m = 1; m <= 12; m++) {
+                    months.push({ value: m + '', label: m + '月', isLeap: false });
+                    if (leapMonth === m) {
+                        months.push({ value: m + '_leap', label: '闰' + m + '月', isLeap: true });
+                    }
+                }
+            } catch (e) {
+                for (let m = 1; m <= 12; m++) {
+                    months.push({ value: m + '', label: m + '月', isLeap: false });
+                }
+            }
+            return months;
+        }
+
+        // ========== Populate Days ==========
+        function populateDays() {
+            const sel = document.getElementById('daySelect');
+            sel.innerHTML = '';
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const monthVal = document.getElementById('monthSelect').value;
+            let maxDay = 30;
+
+            if (calendarType === 'solar') {
+                maxDay = new Date(year, parseInt(monthVal), 0).getDate();
+            } else {
+                maxDay = getLunarMaxDay(year, monthVal);
+            }
+
+            for (let d = 1; d <= maxDay; d++) {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d + '日';
+                sel.appendChild(opt);
+            }
+        }
+
+        function getLunarMaxDay(year, monthVal) {
+            // Default to 30, try to get exact from lunar-javascript
+            try {
+                const isLeap = monthVal.endsWith('_leap');
+                const month = parseInt(monthVal);
+                // Try to find a valid day by checking from 30 down
+                for (let d = 30; d >= 1; d--) {
+                    try {
+                        const lunar = Lunar.fromYmd(year, month, d, isLeap);
+                        lunar.getSolar(); // validate
+                        return d;
+                    } catch (e) {
+                        continue;
+                    }
+                }
+            } catch (e) {}
+            return 30;
+        }
+
+        function onMonthChange() {
+            populateDays();
+            document.getElementById('daySelect').value = '1';
+            onDateChange();
+        }
+
+        // ========== Date Change Handler ==========
+        function onDateChange() {
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const monthVal = document.getElementById('monthSelect').value;
+            const day = parseInt(document.getElementById('daySelect').value);
+            birthHour = parseInt(document.getElementById('hourSelect').value);
+            birthMinute = parseInt(document.getElementById('minuteSelect').value);
+
+            try {
+                if (calendarType === 'solar') {
+                    const month = parseInt(monthVal);
+                    birthSolarDate = new Date(year, month - 1, day,
+                        birthHour >= 0 ? birthHour : 0,
+                        birthMinute >= 0 ? birthMinute : 0,
+                        birthMinute >= 0 ? 0 : 0);
+
+                    // Convert to lunar
+                    const solar = Solar.fromYmd(year, month, day);
+                    const lunar = solar.getLunar();
+                    birthLunarYear = lunar.getYear();
+                    birthLunarMonth = lunar.getMonth();
+                    birthLunarDay = lunar.getDay();
+                    birthLunarIsLeapMonth = false;
+
+                    updateDualCalendar(
+                        `${year}年${month}月${day}日`,
+                        `${lunar.getYearInChinese()}年${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`
+                    );
+                } else {
+                    const isLeap = monthVal.endsWith('_leap');
+                    const month = parseInt(monthVal);
+                    birthLunarYear = year;
+                    birthLunarMonth = month;
+                    birthLunarDay = day;
+                    birthLunarIsLeapMonth = isLeap;
+
+                    const lunar = Lunar.fromYmd(year, month, day, isLeap);
+                    const solar = lunar.getSolar();
+
+                    birthSolarDate = new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay(),
+                        birthHour >= 0 ? birthHour : 0,
+                        birthMinute >= 0 ? birthMinute : 0,
+                        birthMinute >= 0 ? 0 : 0);
+
+                    updateDualCalendar(
+                        `${solar.getYear()}年${solar.getMonth()}月${solar.getDay()}日`,
+                        `${lunar.getYearInChinese()}年${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`
+                    );
+                }
+
+                // Show result cards
+                showResults();
+                startUpdating();
+            } catch (e) {
+                console.error('Date conversion error:', e);
+            }
+        }
+
+        function updateDualCalendar(solarStr, lunarStr) {
+            document.getElementById('solarDisplay').textContent = solarStr;
+            document.getElementById('lunarDisplay').textContent = lunarStr;
+        }
+
+        // ========== Show/Hide Results ==========
+        function showResults() {
+            ['coreCard', 'birthdayCard', 'zodiacCard', 'lifeStatsCard', 'progressCard'].forEach(id => {
+                document.getElementById(id).classList.remove('hidden');
+            });
+        }
+
+        // ========== Real-time Update ==========
+        function startUpdating() {
+            if (updateTimer) clearInterval(updateTimer);
+            updateAll();
+            updateTimer = setInterval(updateAll, 1000);
+        }
+
+        function updateAll() {
+            if (!birthSolarDate) return;
+            const now = new Date();
+            if (now <= birthSolarDate) return;
+
+            updateCoreDisplay(now);
+            updateBirthdayCountdown(now);
+            updateLifeStats(now);
+            updateProgress();
+        }
+
+        // ========== Core Display ==========
+        function updateCoreDisplay(now) {
+            const diff = now.getTime() - birthSolarDate.getTime();
+
+            // Calculate years, months, days
+            let years = now.getFullYear() - birthSolarDate.getFullYear();
+            let months = now.getMonth() - birthSolarDate.getMonth();
+            let days = now.getDate() - birthSolarDate.getDate();
+            let hours = now.getHours() - (birthHour >= 0 ? birthHour : 0);
+            let minutes = now.getMinutes() - (birthMinute >= 0 ? birthMinute : 0);
+            let seconds = now.getSeconds();
+
+            if (seconds < 0) { seconds += 60; minutes--; }
+            if (minutes < 0) { minutes += 60; hours--; }
+            if (hours < 0) { hours += 24; days--; }
+            if (days < 0) {
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += prevMonth.getDate();
+                months--;
+            }
+            if (months < 0) { months += 12; years--; }
+
+            // Main time (years, months, days)
+            const mainEl = document.getElementById('mainTime');
+            const newMain = `${years}<span class="unit">年</span>${months}<span class="unit">月</span>${days}<span class="unit">日</span>`;
+            if (mainEl.innerHTML !== newMain) {
+                mainEl.innerHTML = newMain;
+            }
+
+            // Sub time (hours, minutes, seconds)
+            const subEl = document.getElementById('subTime');
+            const hStr = hours < 10 ? '0' + hours : hours;
+            const mStr = minutes < 10 ? '0' + minutes : minutes;
+            const sStr = seconds < 10 ? '0' + seconds : seconds;
+            const newSub = `${hStr}<span class="unit">时</span>${mStr}<span class="unit">分</span>${sStr}<span class="unit">秒</span>`;
+
+            if (prevSeconds !== seconds) {
+                subEl.innerHTML = newSub;
+                prevSeconds = seconds;
+            }
+
+            // Total stats
+            const totalSeconds = Math.floor(diff / 1000);
+            const totalMinutes = Math.floor(totalSeconds / 60);
+            const totalHours = Math.floor(totalMinutes / 60);
+            const totalDays = Math.floor(totalHours / 24);
+
+            document.getElementById('totalStats').innerHTML = `
+                <div class="total-stat">
+                    <div class="number">${totalDays.toLocaleString()}</div>
+                    <div class="label">总天数</div>
+                </div>
+                <div class="total-stat">
+                    <div class="number">${totalHours.toLocaleString()}</div>
+                    <div class="label">总小时</div>
+                </div>
+                <div class="total-stat">
+                    <div class="number">${totalMinutes.toLocaleString()}</div>
+                    <div class="label">总分钟</div>
+                </div>
+                <div class="total-stat">
+                    <div class="number">${totalSeconds.toLocaleString()}</div>
+                    <div class="label">总秒数</div>
+                </div>
+            `;
+        }
+
+        // ========== Birthday Countdown ==========
+        function updateBirthdayCountdown(now) {
+            const container = document.getElementById('birthdayCountdown');
+
+            // Solar birthday countdown
+            const solarBirthday = getNextBirthday(now, birthSolarDate.getMonth(), birthSolarDate.getDate());
+            const solarDays = Math.ceil((solarBirthday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            const solarIsToday = solarDays === 0;
+
+            // Lunar birthday countdown
+            const lunarNext = getNextLunarBirthday(now);
+            const lunarDays = Math.ceil((lunarNext.solarDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            const lunarIsToday = lunarDays === 0;
+
+            // Age info
+            const nextAge = solarBirthday.getFullYear() - birthSolarDate.getFullYear();
+
+            container.innerHTML = `
+                <div class="birthday-item ${solarIsToday ? 'birthday-today' : ''}">
+                    <div class="type">☀️ 阳历生日</div>
+                    <div class="days">${solarIsToday ? '🎂 今天！' : solarDays + '<span class="small"> 天</span>'}</div>
+                    <div class="date-info">${solarIsToday ? '生日快乐！🎉' : solarBirthday.getFullYear() + '年' + (solarBirthday.getMonth()+1) + '月' + solarBirthday.getDate() + '日'}</div>
+                    ${!solarIsToday && solarDays <= 30 ? '<div class="date-info" style="color:var(--accent);margin-top:4px">再过' + solarDays + '天你就' + nextAge + '岁啦！</div>' : ''}
+                </div>
+                <div class="birthday-item ${lunarIsToday ? 'birthday-today' : ''}">
+                    <div class="type">🌙 农历生日</div>
+                    <div class="days">${lunarIsToday ? '🎂 今天！' : lunarDays + '<span class="small"> 天</span>'}</div>
+                    <div class="date-info">${lunarIsToday ? '农历生日快乐！🎉' : lunarNext.lunarStr}</div>
+                </div>
+            `;
+        }
+
+        function getNextBirthday(now, month, day) {
+            let next = new Date(now.getFullYear(), month, day);
+            if (next <= now) {
+                next = new Date(now.getFullYear() + 1, month, day);
+            }
+            return next;
+        }
+
+        function getNextLunarBirthday(now) {
+            const currentYear = now.getFullYear();
+            // Search from this year to next 2 years
+            for (let y = currentYear; y <= currentYear + 2; y++) {
+                try {
+                    const lunar = Lunar.fromYmd(y, birthLunarMonth, birthLunarDay, birthLunarIsLeapMonth);
+                    const solar = lunar.getSolar();
+                    const solarDate = new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay());
+                    if (solarDate > now) {
+                        return {
+                            solarDate: solarDate,
+                            lunarStr: `${lunar.getYearInChinese()}年${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`
+                        };
+                    }
+                } catch (e) {
+                    continue;
+                }
+            }
+            // Fallback
+            return {
+                solarDate: new Date(currentYear + 1, 0, 1),
+                lunarStr: '无法计算'
+            };
+        }
+
+        // ========== Zodiac & Constellation ==========
+        function updateZodiacConstellation() {
+            const container = document.getElementById('zodiacConstellation');
+            const year = birthSolarDate.getFullYear();
+            const month = birthSolarDate.getMonth() + 1;
+            const day = birthSolarDate.getDate();
+
+            // Get constellation from lunar-javascript
+            const solar = Solar.fromYmd(year, month, day);
+            const lunar = solar.getLunar();
+
+            const constellation = {
+                '白羊座': { emoji: '♈', range: '3/21-4/19', element: '火', trait: '热情、冲动、勇敢' },
+                '金牛座': { emoji: '♉', range: '4/20-5/20', element: '土', trait: '稳重、务实、耐心' },
+                '双子座': { emoji: '♊', range: '5/21-6/21', element: '风', trait: '机智、善变、好奇' },
+                '巨蟹座': { emoji: '♋', range: '6/22-7/22', element: '水', trait: '温柔、敏感、顾家' },
+                '狮子座': { emoji: '♌', range: '7/23-8/22', element: '火', trait: '自信、大方、领导力' },
+                '处女座': { emoji: '♍', range: '8/23-9/22', element: '土', trait: '细致、完美主义、勤奋' },
+                '天秤座': { emoji: '♎', range: '9/23-10/23', element: '风', trait: '优雅、公正、社交' },
+                '天蝎座': { emoji: '♏', range: '10/24-11/22', element: '水', trait: '神秘、深沉、洞察力' },
+                '射手座': { emoji: '♐', range: '11/23-12/21', element: '火', trait: '乐观、自由、冒险' },
+                '摩羯座': { emoji: '♑', range: '12/22-1/19', element: '土', trait: '踏实、有野心、自律' },
+                '水瓶座': { emoji: '♒', range: '1/20-2/18', element: '风', trait: '独立、创新、人道主义' },
+                '双鱼座': { emoji: '♓', range: '2/19-3/20', element: '水', trait: '浪漫、善良、直觉强' }
+            };
+
+            const zodiacAnimals = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
+            const zodiacEmojis = ['🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑', '🐵', '🐔', '🐶', '🐷'];
+            const zodiacTraits = [
+                '机智灵活、适应力强', '勤劳踏实、坚韧不拔', '勇敢自信、充满活力',
+                '温和善良、心思细腻', '气宇轩昂、领导才能', '智慧深沉、直觉敏锐',
+                '热情奔放、自由独立', '温文尔雅、富有艺术感', '聪明伶俐、幽默风趣',
+                '勤奋守时、责任心强', '忠诚正直、勇敢无畏', '豁达乐观、真诚待人'
+            ];
+
+            const shengxiao = lunar.getYearShengXiao();
+            const zodiacIndex = zodiacAnimals.indexOf(shengxiao);
+
+            const xingzuoName = solar.getXingZuo();
+            const cInfo = constellation[xingzuoName] || { emoji: '⭐', range: '', element: '', trait: '' };
+
+            container.innerHTML = `
+                <div class="zodiac-item">
+                    <div class="emoji">${cInfo.emoji}</div>
+                    <div class="name">${xingzuoName}</div>
+                    <div class="info">${cInfo.range}</div>
+                    <div class="info">${cInfo.element}象星座</div>
+                    <div class="info" style="margin-top:4px;color:var(--accent)">${cInfo.trait}</div>
+                </div>
+                <div class="zodiac-item">
+                    <div class="emoji">${zodiacIndex >= 0 ? zodiacEmojis[zodiacIndex] : '🐾'}</div>
+                    <div class="name">${shengxiao}年</div>
+                    <div class="info">十二生肖</div>
+                    <div class="info" style="margin-top:4px;color:var(--accent)">${zodiacIndex >= 0 ? zodiacTraits[zodiacIndex] : ''}</div>
+                </div>
+            `;
+        }
+
+        // ========== Life Stats ==========
+        function updateLifeStats(now) {
+            const diff = now.getTime() - birthSolarDate.getTime();
+            const totalMinutes = Math.floor(diff / 60000);
+            const totalHours = Math.floor(diff / 3600000);
+            const totalDays = Math.floor(diff / 86400000);
+
+            const stats = [
+                { icon: '❤️', value: formatNumber(Math.floor(totalMinutes * 72)), label: '心跳次数（约）' },
+                { icon: '💨', value: formatNumber(Math.floor(totalMinutes * 17)), label: '呼吸次数（约）' },
+                { icon: '👁️', value: formatNumber(Math.floor(totalMinutes * 17)), label: '眨眼次数（约）' },
+                { icon: '😴', value: formatNumber(Math.floor(totalDays / 3)) + ' 天', label: '睡眠时长（约）' },
+                { icon: '🍽️', value: formatNumber(totalDays * 3) + ' 顿', label: '吃饭次数（约）' },
+                { icon: '🚶', value: formatNumber(totalDays * 7000) + ' 步', label: '走路步数（约）' },
+                { icon: '🌕', value: Math.floor(totalDays / 29.5) + ' 次', label: '月亮圆缺' },
+                { icon: '🌍', value: (now.getFullYear() - birthSolarDate.getFullYear()) + ' 圈', label: '地球公转' },
+                { icon: '🌅', value: formatNumber(totalDays) + ' 次', label: '日出日落' }
+            ];
+
+            const container = document.getElementById('lifeStats');
+            container.innerHTML = stats.map(s => `
+                <div class="life-stat-item">
+                    <div class="stat-icon">${s.icon}</div>
+                    <div class="stat-value">${s.value}</div>
+                    <div class="stat-label">${s.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function formatNumber(num) {
+            if (num >= 100000000) {
+                return (num / 100000000).toFixed(2) + ' 亿';
+            } else if (num >= 10000) {
+                return (num / 10000).toFixed(1) + ' 万';
+            }
+            return num.toLocaleString();
+        }
+
+        // ========== Life Progress ==========
+        function updateProgress() {
+            if (!birthSolarDate) return;
+            const now = new Date();
+            const expectancy = parseInt(document.getElementById('lifeExpectancy').value) || 75;
+
+            const ageMs = now.getTime() - birthSolarDate.getTime();
+            const totalMs = expectancy * 365.25 * 24 * 3600 * 1000;
+            const percent = Math.min(100, Math.max(0, (ageMs / totalMs) * 100));
+
+            // Update circle
+            const circle = document.getElementById('progressCircle');
+            const circumference = 2 * Math.PI * 85; // r=85
+            const offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+
+            // Update text
+            document.getElementById('progressPercent').textContent = percent.toFixed(2);
+
+            // Update stage
+            const age = ageMs / (365.25 * 24 * 3600 * 1000);
+            let stage = '';
+            if (age < 6) stage = '👶 幼年';
+            else if (age < 17) stage = '📚 少年';
+            else if (age < 35) stage = '🌟 青年';
+            else if (age < 55) stage = '💼 中年';
+            else stage = '🍵 老年';
+            document.getElementById('lifeStage').textContent = stage;
+        }
+
+        // ========== Theme Toggle ==========
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.querySelector('.theme-toggle');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                btn.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'light');
+                btn.textContent = '☀️';
+            }
+        }
+
+        // ========== 页面可见性 API ==========
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                如果 (updateTimer) {
+                    clearInterval(updateTimer);
+                    updateTimer = null;
+                }
+            } else {
+                如果 (birthSolarDate) {
+                    startUpdating();
+                }
+            }
+        });
+
+        // ========== 覆盖 updateAll 以包含黄道十二宫 ==========
+        const _originalUpdateAll = updateAll;
+        updateAll = function() {
+            _originalUpdateAll();
+            updateZodiacConstellation();
+        };
+
+        // ========== 开始 ==========
+        init();
+    </script>
+</body>
+</html>
