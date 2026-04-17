@@ -1322,28 +1322,28 @@
             }
         }
 
-        // ========== 页面可见性 API ==========
+        // ========== Page Visibility API ==========
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
-                如果 (updateTimer) {
+                if (updateTimer) {
                     clearInterval(updateTimer);
                     updateTimer = null;
                 }
             } else {
-                如果 (birthSolarDate) {
+                if (birthSolarDate) {
                     startUpdating();
                 }
             }
         });
 
-        // ========== 覆盖 updateAll 以包含黄道十二宫 ==========
+        // ========== Override updateAll to include zodiac ==========
         const _originalUpdateAll = updateAll;
         updateAll = function() {
             _originalUpdateAll();
             updateZodiacConstellation();
         };
 
-        // ========== 开始 ==========
+        // ========== Start ==========
         init();
     </script>
 </body>
