@@ -209,8 +209,6 @@
             color: var(--text-primary);
             font-size: 1rem;
             transition: var(--transition);
-            appearance: none;
-            -webkit-appearance: none;
         }
 
         .date-field select:focus,
@@ -799,17 +797,56 @@
     </div>
 
     <script>
+        // ========== WeChat UA Detection ==========
+        var isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+
+        // ========== Polyfill: String.prototype.endsWith ==========
+        if (typeof String.prototype.endsWith !== 'function') {
+            String.prototype.endsWith = function(search, this_len) {
+                if (this_len === undefined || this_len > this.length) {
+                    this_len = this.length;
+                }
+                return this.substring(this_len - search.length, this_len) === search;
+            };
+        }
+
+        // ========== Polyfill: Array.prototype.map ==========
+        if (typeof Array.prototype.map !== 'function') {
+            Array.prototype.map = function(callback, thisArg) {
+                var arr = this;
+                var result = [];
+                for (var i = 0; i < arr.length; i++) {
+                    if (i in arr) {
+                        result.push(callback.call(thisArg, arr[i], i, arr));
+                    }
+                }
+                return result;
+            };
+        }
+
+        // ========== Polyfill: Array.prototype.forEach ==========
+        if (typeof Array.prototype.forEach !== 'function') {
+            Array.prototype.forEach = function(callback, thisArg) {
+                var arr = this;
+                for (var i = 0; i < arr.length; i++) {
+                    if (i in arr) {
+                        callback.call(thisArg, arr[i], i, arr);
+                    }
+                }
+            };
+        }
+
         // ========== State ==========
-        let calendarType = 'solar'; // 'solar' or 'lunar'
-        let birthSolarDate = null;   // Date object for solar birth
-        let birthLunarYear = 0;
-        let birthLunarMonth = 0;
-        let birthLunarDay = 0;
-        let birthLunarIsLeapMonth = false;
-        let birthHour = -1;
-        let birthMinute = -1;
-        let updateTimer = null;
-        let prevSeconds = -1;
+        var calendarType = 'solar'; // 'solar' or 'lunar'
+        var birthSolarDate = null;   // Date object for solar birth
+        var birthLunarYear = 0;
+        var birthLunarMonth = 0;
+        var birthLunarDay = 0;
+        var birthLunarIsLeapMonth = false;
+        var birthHour = -1;
+        var birthMinute = -1;
+        var updateTimer = null;
+        var prevSeconds = -1;
 
         // ========== Initialization ==========
         function init() {
@@ -821,10 +858,10 @@
         }
 
         function populateYears() {
-            const sel = document.getElementById('yearSelect');
-            const currentYear = new Date().getFullYear();
-            for (let y = currentYear; y >= 1900; y--) {
-                const opt = document.createElement('option');
+            var sel = document.getElementById('yearSelect');
+            var currentYear = new Date().getFullYear();
+            for (var y = currentYear; y >= 1900; y--) {
+                var opt = document.createElement('option');
                 opt.value = y;
                 opt.textContent = y + '年';
                 sel.appendChild(opt);
@@ -832,9 +869,9 @@
         }
 
         function populateHours() {
-            const sel = document.getElementById('hourSelect');
-            for (let h = 0; h < 24; h++) {
-                const opt = document.createElement('option');
+            var sel = document.getElementById('hourSelect');
+            for (var h = 0; h < 24; h++) {
+                var opt = document.createElement('option');
                 opt.value = h;
                 opt.textContent = (h < 10 ? '0' : '') + h + '时';
                 sel.appendChild(opt);
@@ -842,9 +879,9 @@
         }
 
         function populateMinutes() {
-            const sel = document.getElementById('minuteSelect');
-            for (let m = 0; m < 60; m++) {
-                const opt = document.createElement('option');
+            var sel = document.getElementById('minuteSelect');
+            for (var m = 0; m < 60; m++) {
+                var opt = document.createElement('option');
                 opt.value = m;
                 opt.textContent = (m < 10 ? '0' : '') + m + '分';
                 sel.appendChild(opt);
@@ -873,43 +910,44 @@
 
         // ========== Populate Months ==========
         function populateMonths() {
-            const sel = document.getElementById('monthSelect');
+            var sel = document.getElementById('monthSelect');
             sel.innerHTML = '';
             if (calendarType === 'solar') {
-                for (let m = 1; m <= 12; m++) {
-                    const opt = document.createElement('option');
+                for (var m = 1; m <= 12; m++) {
+                    var opt = document.createElement('option');
                     opt.value = m;
                     opt.textContent = m + '月';
                     sel.appendChild(opt);
                 }
             } else {
-                const year = parseInt(document.getElementById('yearSelect').value);
+                var year = parseInt(document.getElementById('yearSelect').value);
                 // Get lunar months for this year (including leap months)
-                const months = getLunarMonths(year);
-                months.forEach(m => {
-                    const opt = document.createElement('option');
-                    opt.value = m.value;
-                    opt.textContent = m.label;
+                var months = getLunarMonths(year);
+                for (var i = 0; i < months.length; i++) {
+                    var mItem = months[i];
+                    var opt = document.createElement('option');
+                    opt.value = mItem.value;
+                    opt.textContent = mItem.label;
                     sel.appendChild(opt);
-                });
+                }
             }
         }
 
         function getLunarMonths(year) {
-            const months = [];
+            var months = [];
             // Use lunar-javascript to get leap month info
             try {
-                const solar = Solar.fromYmd(year, 1, 1);
-                const lunar = solar.getLunar();
-                const leapMonth = lunar.getYearLeapMonth();
-                for (let m = 1; m <= 12; m++) {
+                var solar = Solar.fromYmd(year, 1, 1);
+                var lunar = solar.getLunar();
+                var leapMonth = lunar.getYearLeapMonth();
+                for (var m = 1; m <= 12; m++) {
                     months.push({ value: m + '', label: m + '月', isLeap: false });
                     if (leapMonth === m) {
                         months.push({ value: m + '_leap', label: '闰' + m + '月', isLeap: true });
                     }
                 }
             } catch (e) {
-                for (let m = 1; m <= 12; m++) {
+                for (var m = 1; m <= 12; m++) {
                     months.push({ value: m + '', label: m + '月', isLeap: false });
                 }
             }
@@ -918,11 +956,11 @@
 
         // ========== Populate Days ==========
         function populateDays() {
-            const sel = document.getElementById('daySelect');
+            var sel = document.getElementById('daySelect');
             sel.innerHTML = '';
-            const year = parseInt(document.getElementById('yearSelect').value);
-            const monthVal = document.getElementById('monthSelect').value;
-            let maxDay = 30;
+            var year = parseInt(document.getElementById('yearSelect').value);
+            var monthVal = document.getElementById('monthSelect').value;
+            var maxDay = 30;
 
             if (calendarType === 'solar') {
                 maxDay = new Date(year, parseInt(monthVal), 0).getDate();
@@ -930,8 +968,8 @@
                 maxDay = getLunarMaxDay(year, monthVal);
             }
 
-            for (let d = 1; d <= maxDay; d++) {
-                const opt = document.createElement('option');
+            for (var d = 1; d <= maxDay; d++) {
+                var opt = document.createElement('option');
                 opt.value = d;
                 opt.textContent = d + '日';
                 sel.appendChild(opt);
@@ -941,12 +979,12 @@
         function getLunarMaxDay(year, monthVal) {
             // Default to 30, try to get exact from lunar-javascript
             try {
-                const isLeap = monthVal.endsWith('_leap');
-                const month = parseInt(monthVal);
+                var isLeap = monthVal.endsWith('_leap');
+                var month = parseInt(monthVal);
                 // Try to find a valid day by checking from 30 down
-                for (let d = 30; d >= 1; d--) {
+                for (var d = 30; d >= 1; d--) {
                     try {
-                        const lunar = Lunar.fromYmd(year, month, d, isLeap);
+                        var lunar = Lunar.fromYmd(year, month, d, isLeap);
                         lunar.getSolar(); // validate
                         return d;
                     } catch (e) {
@@ -965,42 +1003,42 @@
 
         // ========== Date Change Handler ==========
         function onDateChange() {
-            const year = parseInt(document.getElementById('yearSelect').value);
-            const monthVal = document.getElementById('monthSelect').value;
-            const day = parseInt(document.getElementById('daySelect').value);
+            var year = parseInt(document.getElementById('yearSelect').value);
+            var monthVal = document.getElementById('monthSelect').value;
+            var day = parseInt(document.getElementById('daySelect').value);
             birthHour = parseInt(document.getElementById('hourSelect').value);
             birthMinute = parseInt(document.getElementById('minuteSelect').value);
 
             try {
                 if (calendarType === 'solar') {
-                    const month = parseInt(monthVal);
+                    var month = parseInt(monthVal);
                     birthSolarDate = new Date(year, month - 1, day,
                         birthHour >= 0 ? birthHour : 0,
                         birthMinute >= 0 ? birthMinute : 0,
                         birthMinute >= 0 ? 0 : 0);
 
                     // Convert to lunar
-                    const solar = Solar.fromYmd(year, month, day);
-                    const lunar = solar.getLunar();
+                    var solar = Solar.fromYmd(year, month, day);
+                    var lunar = solar.getLunar();
                     birthLunarYear = lunar.getYear();
                     birthLunarMonth = lunar.getMonth();
                     birthLunarDay = lunar.getDay();
                     birthLunarIsLeapMonth = false;
 
                     updateDualCalendar(
-                        `${year}年${month}月${day}日`,
-                        `${lunar.getYearInChinese()}年${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`
+                        year + '年' + month + '月' + day + '日',
+                        lunar.getYearInChinese() + '年' + lunar.getMonthInChinese() + '月' + lunar.getDayInChinese()
                     );
                 } else {
-                    const isLeap = monthVal.endsWith('_leap');
-                    const month = parseInt(monthVal);
+                    var isLeap = monthVal.endsWith('_leap');
+                    var month = parseInt(monthVal);
                     birthLunarYear = year;
                     birthLunarMonth = month;
                     birthLunarDay = day;
                     birthLunarIsLeapMonth = isLeap;
 
-                    const lunar = Lunar.fromYmd(year, month, day, isLeap);
-                    const solar = lunar.getSolar();
+                    var lunar = Lunar.fromYmd(year, month, day, isLeap);
+                    var solar = lunar.getSolar();
 
                     birthSolarDate = new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay(),
                         birthHour >= 0 ? birthHour : 0,
@@ -1008,8 +1046,8 @@
                         birthMinute >= 0 ? 0 : 0);
 
                     updateDualCalendar(
-                        `${solar.getYear()}年${solar.getMonth()}月${solar.getDay()}日`,
-                        `${lunar.getYearInChinese()}年${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`
+                        solar.getYear() + '年' + solar.getMonth() + '月' + solar.getDay() + '日',
+                        lunar.getYearInChinese() + '年' + lunar.getMonthInChinese() + '月' + lunar.getDayInChinese()
                     );
                 }
 
@@ -1028,9 +1066,10 @@
 
         // ========== Show/Hide Results ==========
         function showResults() {
-            ['coreCard', 'birthdayCard', 'zodiacCard', 'lifeStatsCard', 'progressCard'].forEach(id => {
-                document.getElementById(id).classList.remove('hidden');
-            });
+            var ids = ['coreCard', 'birthdayCard', 'zodiacCard', 'lifeStatsCard', 'progressCard'];
+            for (var i = 0; i < ids.length; i++) {
+                document.getElementById(ids[i]).classList.remove('hidden');
+            }
         }
 
         // ========== Real-time Update ==========
@@ -1042,50 +1081,51 @@
 
         function updateAll() {
             if (!birthSolarDate) return;
-            const now = new Date();
+            var now = new Date();
             if (now <= birthSolarDate) return;
 
             updateCoreDisplay(now);
             updateBirthdayCountdown(now);
             updateLifeStats(now);
             updateProgress();
+            updateZodiacConstellation();
         }
 
         // ========== Core Display ==========
         function updateCoreDisplay(now) {
-            const diff = now.getTime() - birthSolarDate.getTime();
+            var diff = now.getTime() - birthSolarDate.getTime();
 
             // Calculate years, months, days
-            let years = now.getFullYear() - birthSolarDate.getFullYear();
-            let months = now.getMonth() - birthSolarDate.getMonth();
-            let days = now.getDate() - birthSolarDate.getDate();
-            let hours = now.getHours() - (birthHour >= 0 ? birthHour : 0);
-            let minutes = now.getMinutes() - (birthMinute >= 0 ? birthMinute : 0);
-            let seconds = now.getSeconds();
+            var years = now.getFullYear() - birthSolarDate.getFullYear();
+            var months = now.getMonth() - birthSolarDate.getMonth();
+            var days = now.getDate() - birthSolarDate.getDate();
+            var hours = now.getHours() - (birthHour >= 0 ? birthHour : 0);
+            var minutes = now.getMinutes() - (birthMinute >= 0 ? birthMinute : 0);
+            var seconds = now.getSeconds();
 
             if (seconds < 0) { seconds += 60; minutes--; }
             if (minutes < 0) { minutes += 60; hours--; }
             if (hours < 0) { hours += 24; days--; }
             if (days < 0) {
-                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                var prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
                 days += prevMonth.getDate();
                 months--;
             }
             if (months < 0) { months += 12; years--; }
 
             // Main time (years, months, days)
-            const mainEl = document.getElementById('mainTime');
-            const newMain = `${years}<span class="unit">年</span>${months}<span class="unit">月</span>${days}<span class="unit">日</span>`;
+            var mainEl = document.getElementById('mainTime');
+            var newMain = '' + years + '<span class="unit">年</span>' + months + '<span class="unit">月</span>' + days + '<span class="unit">日</span>';
             if (mainEl.innerHTML !== newMain) {
                 mainEl.innerHTML = newMain;
             }
 
             // Sub time (hours, minutes, seconds)
-            const subEl = document.getElementById('subTime');
-            const hStr = hours < 10 ? '0' + hours : hours;
-            const mStr = minutes < 10 ? '0' + minutes : minutes;
-            const sStr = seconds < 10 ? '0' + seconds : seconds;
-            const newSub = `${hStr}<span class="unit">时</span>${mStr}<span class="unit">分</span>${sStr}<span class="unit">秒</span>`;
+            var subEl = document.getElementById('subTime');
+            var hStr = hours < 10 ? '0' + hours : hours;
+            var mStr = minutes < 10 ? '0' + minutes : minutes;
+            var sStr = seconds < 10 ? '0' + seconds : seconds;
+            var newSub = '' + hStr + '<span class="unit">时</span>' + mStr + '<span class="unit">分</span>' + sStr + '<span class="unit">秒</span>';
 
             if (prevSeconds !== seconds) {
                 subEl.innerHTML = newSub;
@@ -1093,65 +1133,77 @@
             }
 
             // Total stats
-            const totalSeconds = Math.floor(diff / 1000);
-            const totalMinutes = Math.floor(totalSeconds / 60);
-            const totalHours = Math.floor(totalMinutes / 60);
-            const totalDays = Math.floor(totalHours / 24);
+            var totalSeconds = Math.floor(diff / 1000);
+            var totalMinutes = Math.floor(totalSeconds / 60);
+            var totalHours = Math.floor(totalMinutes / 60);
+            var totalDays = Math.floor(totalHours / 24);
 
-            document.getElementById('totalStats').innerHTML = `
-                <div class="total-stat">
-                    <div class="number">${totalDays.toLocaleString()}</div>
-                    <div class="label">总天数</div>
-                </div>
-                <div class="total-stat">
-                    <div class="number">${totalHours.toLocaleString()}</div>
-                    <div class="label">总小时</div>
-                </div>
-                <div class="total-stat">
-                    <div class="number">${totalMinutes.toLocaleString()}</div>
-                    <div class="label">总分钟</div>
-                </div>
-                <div class="total-stat">
-                    <div class="number">${totalSeconds.toLocaleString()}</div>
-                    <div class="label">总秒数</div>
-                </div>
-            `;
+            document.getElementById('totalStats').innerHTML =
+                '<div class="total-stat">' +
+                    '<div class="number">' + totalDays.toLocaleString() + '</div>' +
+                    '<div class="label">总天数</div>' +
+                '</div>' +
+                '<div class="total-stat">' +
+                    '<div class="number">' + totalHours.toLocaleString() + '</div>' +
+                    '<div class="label">总小时</div>' +
+                '</div>' +
+                '<div class="total-stat">' +
+                    '<div class="number">' + totalMinutes.toLocaleString() + '</div>' +
+                    '<div class="label">总分钟</div>' +
+                '</div>' +
+                '<div class="total-stat">' +
+                    '<div class="number">' + totalSeconds.toLocaleString() + '</div>' +
+                    '<div class="label">总秒数</div>' +
+                '</div>';
         }
 
         // ========== Birthday Countdown ==========
         function updateBirthdayCountdown(now) {
-            const container = document.getElementById('birthdayCountdown');
+            var container = document.getElementById('birthdayCountdown');
 
             // Solar birthday countdown
-            const solarBirthday = getNextBirthday(now, birthSolarDate.getMonth(), birthSolarDate.getDate());
-            const solarDays = Math.ceil((solarBirthday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-            const solarIsToday = solarDays === 0;
+            var solarBirthday = getNextBirthday(now, birthSolarDate.getMonth(), birthSolarDate.getDate());
+            var solarDays = Math.ceil((solarBirthday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            var solarIsToday = solarDays === 0;
 
             // Lunar birthday countdown
-            const lunarNext = getNextLunarBirthday(now);
-            const lunarDays = Math.ceil((lunarNext.solarDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-            const lunarIsToday = lunarDays === 0;
+            var lunarNext = getNextLunarBirthday(now);
+            var lunarDays = Math.ceil((lunarNext.solarDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            var lunarIsToday = lunarDays === 0;
 
             // Age info
-            const nextAge = solarBirthday.getFullYear() - birthSolarDate.getFullYear();
+            var nextAge = solarBirthday.getFullYear() - birthSolarDate.getFullYear();
 
-            container.innerHTML = `
-                <div class="birthday-item ${solarIsToday ? 'birthday-today' : ''}">
-                    <div class="type">☀️ 阳历生日</div>
-                    <div class="days">${solarIsToday ? '🎂 今天！' : solarDays + '<span class="small"> 天</span>'}</div>
-                    <div class="date-info">${solarIsToday ? '生日快乐！🎉' : solarBirthday.getFullYear() + '年' + (solarBirthday.getMonth()+1) + '月' + solarBirthday.getDate() + '日'}</div>
-                    ${!solarIsToday && solarDays <= 30 ? '<div class="date-info" style="color:var(--accent);margin-top:4px">再过' + solarDays + '天你就' + nextAge + '岁啦！</div>' : ''}
-                </div>
-                <div class="birthday-item ${lunarIsToday ? 'birthday-today' : ''}">
-                    <div class="type">🌙 农历生日</div>
-                    <div class="days">${lunarIsToday ? '🎂 今天！' : lunarDays + '<span class="small"> 天</span>'}</div>
-                    <div class="date-info">${lunarIsToday ? '农历生日快乐！🎉' : lunarNext.lunarStr}</div>
-                </div>
-            `;
+            var solarClass = solarIsToday ? 'birthday-item birthday-today' : 'birthday-item';
+            var lunarClass = lunarIsToday ? 'birthday-item birthday-today' : 'birthday-item';
+
+            var solarDaysHtml = solarIsToday ? '🎂 今天！' : solarDays + '<span class="small"> 天</span>';
+            var lunarDaysHtml = lunarIsToday ? '🎂 今天！' : lunarDays + '<span class="small"> 天</span>';
+
+            var solarDateInfo = solarIsToday ? '生日快乐！🎉' : solarBirthday.getFullYear() + '年' + (solarBirthday.getMonth()+1) + '月' + solarBirthday.getDate() + '日';
+            var lunarDateInfo = lunarIsToday ? '农历生日快乐！🎉' : lunarNext.lunarStr;
+
+            var solarExtraHtml = '';
+            if (!solarIsToday && solarDays <= 30) {
+                solarExtraHtml = '<div class="date-info" style="color:var(--accent);margin-top:4px">再过' + solarDays + '天你就' + nextAge + '岁啦！</div>';
+            }
+
+            container.innerHTML =
+                '<div class="' + solarClass + '">' +
+                    '<div class="type">☀️ 阳历生日</div>' +
+                    '<div class="days">' + solarDaysHtml + '</div>' +
+                    '<div class="date-info">' + solarDateInfo + '</div>' +
+                    solarExtraHtml +
+                '</div>' +
+                '<div class="' + lunarClass + '">' +
+                    '<div class="type">🌙 农历生日</div>' +
+                    '<div class="days">' + lunarDaysHtml + '</div>' +
+                    '<div class="date-info">' + lunarDateInfo + '</div>' +
+                '</div>';
         }
 
         function getNextBirthday(now, month, day) {
-            let next = new Date(now.getFullYear(), month, day);
+            var next = new Date(now.getFullYear(), month, day);
             if (next <= now) {
                 next = new Date(now.getFullYear() + 1, month, day);
             }
@@ -1159,17 +1211,17 @@
         }
 
         function getNextLunarBirthday(now) {
-            const currentYear = now.getFullYear();
+            var currentYear = now.getFullYear();
             // Search from this year to next 2 years
-            for (let y = currentYear; y <= currentYear + 2; y++) {
+            for (var y = currentYear; y <= currentYear + 2; y++) {
                 try {
-                    const lunar = Lunar.fromYmd(y, birthLunarMonth, birthLunarDay, birthLunarIsLeapMonth);
-                    const solar = lunar.getSolar();
-                    const solarDate = new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay());
+                    var lunar = Lunar.fromYmd(y, birthLunarMonth, birthLunarDay, birthLunarIsLeapMonth);
+                    var solar = lunar.getSolar();
+                    var solarDate = new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay());
                     if (solarDate > now) {
                         return {
                             solarDate: solarDate,
-                            lunarStr: `${lunar.getYearInChinese()}年${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`
+                            lunarStr: lunar.getYearInChinese() + '年' + lunar.getMonthInChinese() + '月' + lunar.getDayInChinese()
                         };
                     }
                 } catch (e) {
@@ -1185,16 +1237,16 @@
 
         // ========== Zodiac & Constellation ==========
         function updateZodiacConstellation() {
-            const container = document.getElementById('zodiacConstellation');
-            const year = birthSolarDate.getFullYear();
-            const month = birthSolarDate.getMonth() + 1;
-            const day = birthSolarDate.getDate();
+            var container = document.getElementById('zodiacConstellation');
+            var year = birthSolarDate.getFullYear();
+            var month = birthSolarDate.getMonth() + 1;
+            var day = birthSolarDate.getDate();
 
             // Get constellation from lunar-javascript
-            const solar = Solar.fromYmd(year, month, day);
-            const lunar = solar.getLunar();
+            var solar = Solar.fromYmd(year, month, day);
+            var lunar = solar.getLunar();
 
-            const constellation = {
+            var constellation = {
                 '白羊座': { emoji: '♈', range: '3/21-4/19', element: '火', trait: '热情、冲动、勇敢' },
                 '金牛座': { emoji: '♉', range: '4/20-5/20', element: '土', trait: '稳重、务实、耐心' },
                 '双子座': { emoji: '♊', range: '5/21-6/21', element: '风', trait: '机智、善变、好奇' },
@@ -1209,46 +1261,48 @@
                 '双鱼座': { emoji: '♓', range: '2/19-3/20', element: '水', trait: '浪漫、善良、直觉强' }
             };
 
-            const zodiacAnimals = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
-            const zodiacEmojis = ['🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑', '🐵', '🐔', '🐶', '🐷'];
-            const zodiacTraits = [
+            var zodiacAnimals = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
+            var zodiacEmojis = ['🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑', '🐵', '🐔', '🐶', '🐷'];
+            var zodiacTraits = [
                 '机智灵活、适应力强', '勤劳踏实、坚韧不拔', '勇敢自信、充满活力',
                 '温和善良、心思细腻', '气宇轩昂、领导才能', '智慧深沉、直觉敏锐',
                 '热情奔放、自由独立', '温文尔雅、富有艺术感', '聪明伶俐、幽默风趣',
                 '勤奋守时、责任心强', '忠诚正直、勇敢无畏', '豁达乐观、真诚待人'
             ];
 
-            const shengxiao = lunar.getYearShengXiao();
-            const zodiacIndex = zodiacAnimals.indexOf(shengxiao);
+            var shengxiao = lunar.getYearShengXiao();
+            var zodiacIndex = zodiacAnimals.indexOf(shengxiao);
 
-            const xingzuoName = solar.getXingZuo();
-            const cInfo = constellation[xingzuoName] || { emoji: '⭐', range: '', element: '', trait: '' };
+            var xingzuoName = solar.getXingZuo();
+            var cInfo = constellation[xingzuoName] || { emoji: '⭐', range: '', element: '', trait: '' };
 
-            container.innerHTML = `
-                <div class="zodiac-item">
-                    <div class="emoji">${cInfo.emoji}</div>
-                    <div class="name">${xingzuoName}</div>
-                    <div class="info">${cInfo.range}</div>
-                    <div class="info">${cInfo.element}象星座</div>
-                    <div class="info" style="margin-top:4px;color:var(--accent)">${cInfo.trait}</div>
-                </div>
-                <div class="zodiac-item">
-                    <div class="emoji">${zodiacIndex >= 0 ? zodiacEmojis[zodiacIndex] : '🐾'}</div>
-                    <div class="name">${shengxiao}年</div>
-                    <div class="info">十二生肖</div>
-                    <div class="info" style="margin-top:4px;color:var(--accent)">${zodiacIndex >= 0 ? zodiacTraits[zodiacIndex] : ''}</div>
-                </div>
-            `;
+            var zodiacEmoji = zodiacIndex >= 0 ? zodiacEmojis[zodiacIndex] : '🐾';
+            var zodiacTrait = zodiacIndex >= 0 ? zodiacTraits[zodiacIndex] : '';
+
+            container.innerHTML =
+                '<div class="zodiac-item">' +
+                    '<div class="emoji">' + cInfo.emoji + '</div>' +
+                    '<div class="name">' + xingzuoName + '</div>' +
+                    '<div class="info">' + cInfo.range + '</div>' +
+                    '<div class="info">' + cInfo.element + '象星座</div>' +
+                    '<div class="info" style="margin-top:4px;color:var(--accent)">' + cInfo.trait + '</div>' +
+                '</div>' +
+                '<div class="zodiac-item">' +
+                    '<div class="emoji">' + zodiacEmoji + '</div>' +
+                    '<div class="name">' + shengxiao + '年</div>' +
+                    '<div class="info">十二生肖</div>' +
+                    '<div class="info" style="margin-top:4px;color:var(--accent)">' + zodiacTrait + '</div>' +
+                '</div>';
         }
 
         // ========== Life Stats ==========
         function updateLifeStats(now) {
-            const diff = now.getTime() - birthSolarDate.getTime();
-            const totalMinutes = Math.floor(diff / 60000);
-            const totalHours = Math.floor(diff / 3600000);
-            const totalDays = Math.floor(diff / 86400000);
+            var diff = now.getTime() - birthSolarDate.getTime();
+            var totalMinutes = Math.floor(diff / 60000);
+            var totalHours = Math.floor(diff / 3600000);
+            var totalDays = Math.floor(diff / 86400000);
 
-            const stats = [
+            var stats = [
                 { icon: '❤️', value: formatNumber(Math.floor(totalMinutes * 72)), label: '心跳次数（约）' },
                 { icon: '💨', value: formatNumber(Math.floor(totalMinutes * 17)), label: '呼吸次数（约）' },
                 { icon: '👁️', value: formatNumber(Math.floor(totalMinutes * 17)), label: '眨眼次数（约）' },
@@ -1260,14 +1314,19 @@
                 { icon: '🌅', value: formatNumber(totalDays) + ' 次', label: '日出日落' }
             ];
 
-            const container = document.getElementById('lifeStats');
-            container.innerHTML = stats.map(s => `
-                <div class="life-stat-item">
-                    <div class="stat-icon">${s.icon}</div>
-                    <div class="stat-value">${s.value}</div>
-                    <div class="stat-label">${s.label}</div>
-                </div>
-            `).join('');
+            var html = '';
+            for (var i = 0; i < stats.length; i++) {
+                var s = stats[i];
+                html +=
+                    '<div class="life-stat-item">' +
+                        '<div class="stat-icon">' + s.icon + '</div>' +
+                        '<div class="stat-value">' + s.value + '</div>' +
+                        '<div class="stat-label">' + s.label + '</div>' +
+                    '</div>';
+            }
+
+            var container = document.getElementById('lifeStats');
+            container.innerHTML = html;
         }
 
         function formatNumber(num) {
@@ -1282,25 +1341,25 @@
         // ========== Life Progress ==========
         function updateProgress() {
             if (!birthSolarDate) return;
-            const now = new Date();
-            const expectancy = parseInt(document.getElementById('lifeExpectancy').value) || 75;
+            var now = new Date();
+            var expectancy = parseInt(document.getElementById('lifeExpectancy').value) || 75;
 
-            const ageMs = now.getTime() - birthSolarDate.getTime();
-            const totalMs = expectancy * 365.25 * 24 * 3600 * 1000;
-            const percent = Math.min(100, Math.max(0, (ageMs / totalMs) * 100));
+            var ageMs = now.getTime() - birthSolarDate.getTime();
+            var totalMs = expectancy * 365.25 * 24 * 3600 * 1000;
+            var percent = Math.min(100, Math.max(0, (ageMs / totalMs) * 100));
 
             // Update circle
-            const circle = document.getElementById('progressCircle');
-            const circumference = 2 * Math.PI * 85; // r=85
-            const offset = circumference - (percent / 100) * circumference;
+            var circle = document.getElementById('progressCircle');
+            var circumference = 2 * Math.PI * 85; // r=85
+            var offset = circumference - (percent / 100) * circumference;
             circle.style.strokeDashoffset = offset;
 
             // Update text
             document.getElementById('progressPercent').textContent = percent.toFixed(2);
 
             // Update stage
-            const age = ageMs / (365.25 * 24 * 3600 * 1000);
-            let stage = '';
+            var age = ageMs / (365.25 * 24 * 3600 * 1000);
+            var stage = '';
             if (age < 6) stage = '👶 幼年';
             else if (age < 17) stage = '📚 少年';
             else if (age < 35) stage = '🌟 青年';
@@ -1311,8 +1370,8 @@
 
         // ========== Theme Toggle ==========
         function toggleTheme() {
-            const body = document.body;
-            const btn = document.querySelector('.theme-toggle');
+            var body = document.body;
+            var btn = document.querySelector('.theme-toggle');
             if (body.getAttribute('data-theme') === 'light') {
                 body.removeAttribute('data-theme');
                 btn.textContent = '🌙';
@@ -1335,13 +1394,6 @@
                 }
             }
         });
-
-        // ========== Override updateAll to include zodiac ==========
-        const _originalUpdateAll = updateAll;
-        updateAll = function() {
-            _originalUpdateAll();
-            updateZodiacConstellation();
-        };
 
         // ========== Start ==========
         init();
