@@ -100,11 +100,242 @@
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
+        /* ========== 星期几 ========== */
+        .weekday-info {
+            text-align: center;
+            padding: 16px;
+        }
+        .weekday-info .weekday-main {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .weekday-info .weekday-details {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* ========== 生命周历 ========== */
+        .week-calendar-desc {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .week-calendar {
+            display: grid;
+            grid-template-columns: repeat(52, 1fr);
+            gap: 1px;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .week-cell {
+            aspect-ratio: 1;
+            min-width: 6px;
+            border-radius: 2px;
+            background: var(--border);
+            transition: all 0.2s;
+        }
+        .week-cell.lived {
+            background: var(--accent);
+        }
+        .week-cell.current {
+            background: var(--warning);
+            box-shadow: 0 0 4px var(--warning);
+        }
+        .week-cell:hover {
+            transform: scale(2);
+            z-index: 1;
+        }
+
+        /* ========== 趣味年龄 ========== */
+        .fun-age {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 8px 0;
+        }
+        .fun-age-item {
+            text-align: center;
+            padding: 12px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+        }
+        .fun-age-item .fun-icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+        .fun-age-item .fun-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .fun-age-item .fun-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ========== 节气季节 ========== */
+        .season-info {
+            text-align: center;
+            padding: 16px;
+        }
+        .season-info .season-main {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .season-info .season-details {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* ========== 历史上的今天 ========== */
+        .history-info {
+            padding: 8px 0;
+        }
+        .history-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        .history-item .history-year {
+            color: var(--accent);
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        /* ========== 同日生名人 ========== */
+        .famous-list {
+            padding: 8px 0;
+        }
+        .famous-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .famous-item:last-child {
+            border-bottom: none;
+        }
+        .famous-item .famous-emoji {
+            font-size: 1.3rem;
+            margin-right: 10px;
+        }
+        .famous-item .famous-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-right: 8px;
+        }
+        .famous-item .famous-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ========== 纪念日 ========== */
+        .anniversary-add {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .anniversary-add input {
+            flex: 1;
+            min-width: 100px;
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        .anniversary-add input[type="date"] {
+            max-width: 160px;
+        }
+        .anniversary-btn {
+            padding: 8px 16px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        .anniversary-btn:hover {
+            opacity: 0.9;
+        }
+        .anniversary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .anniversary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+        }
+        .anniversary-item .anni-info {
+            flex: 1;
+        }
+        .anniversary-item .anni-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .anniversary-item .anni-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .anniversary-item .anni-countdown {
+            text-align: right;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .anniversary-item .anni-delete {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-left: 8px;
+            padding: 4px;
+        }
+        .anniversary-item .anni-delete:hover {
+            color: #e94560;
+        }
+
+
         /* ========== Reset & Base ========== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 24px 16px 32px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .site-footer .footer-brand {
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        .site-footer .footer-url {
+            opacity: 0.7;
         }
 
         body {
@@ -362,6 +593,14 @@
             gap: 16px;
         }
 
+        .birthday-note {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            padding: 4px 0;
+        }
+
         .birthday-item {
             padding: 20px;
             background: var(--bg-primary);
@@ -407,35 +646,114 @@
             to { transform: scale(1.05); }
         }
 
-        /* ========== Zodiac & Constellation ========== */
-        .zodiac-constellation {
+        /* ========== 星座 & 生肖 并排布局 ========== */
+        .zodiac-sx-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            grid-template-columns: 1fr 1px 1fr;
+            gap: 0;
+            align-items: start;
         }
 
-        .zodiac-item {
-            padding: 20px;
-            background: var(--bg-primary);
-            border-radius: var(--radius-sm);
-            text-align: center;
+        .zodiac-sx-divider {
+            background: var(--border);
+            align-self: stretch;
+            margin: 4px 0;
         }
 
-        .zodiac-item .emoji {
-            font-size: 2.5rem;
-            margin-bottom: 8px;
+        .zodiac-sx-col {
+            padding: 0 16px;
         }
 
-        .zodiac-item .name {
-            font-size: 1.1rem;
+        .zodiac-sx-col:first-child {
+            padding-left: 0;
+        }
+
+        .zodiac-sx-col:last-child {
+            padding-right: 0;
+        }
+
+        /* 共用头部 */
+        .zs-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .zs-emoji {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .zs-header-text {
+            min-width: 0;
+        }
+
+        .zs-name {
+            font-size: 1rem;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 4px;
         }
 
-        .zodiac-item .info {
-            font-size: 0.8rem;
+        .zs-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* 信息网格 */
+        .zs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 12px;
+            margin-bottom: 10px;
+        }
+
+        .zs-grid-item {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .zs-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .zs-value {
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* 配对行 */
+        .zs-match-row-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+            font-size: 0.78rem;
+            margin-bottom: 10px;
+            padding: 6px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .zs-match-label {
+            color: var(--text-muted);
+        }
+
+        .zs-match-value {
+            font-weight: 500;
+        }
+
+        .zs-match-value.good { color: var(--success); }
+        .zs-match-value.bad { color: var(--danger); }
+
+        /* 性格解读 */
+        .zs-desc {
+            font-size: 0.78rem;
             color: var(--text-secondary);
+            line-height: 1.6;
         }
 
         /* ========== Life Stats Grid ========== */
@@ -681,9 +999,27 @@
                 gap: 16px;
             }
 
-            .birthday-countdown,
-            .zodiac-constellation {
+            .birthday-countdown {
                 grid-template-columns: 1fr;
+            }
+
+            .zodiac-sx-layout {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .zodiac-sx-divider {
+                display: none;
+            }
+
+            .zodiac-sx-col {
+                padding: 0;
+            }
+
+            .zodiac-sx-col:first-child {
+                padding-bottom: 12px;
+                border-bottom: 1px solid var(--border-color);
+                margin-bottom: 12px;
             }
 
             .progress-ring-container {
@@ -694,6 +1030,20 @@
             .progress-ring {
                 width: 160px;
                 height: 160px;
+            }
+
+            .fun-age {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .week-cell {
+                min-width: 4px;
+            }
+            .anniversary-add {
+                flex-direction: column;
+            }
+            .anniversary-add input[type="date"] {
+                max-width: 100%;
             }
         }
 
@@ -807,22 +1157,32 @@
             </div>
         </div>
 
+        <!-- 星期几卡片 -->
+        <div class="card hidden" id="weekdayCard">
+            <div class="card-title"><span class="icon">📅</span> 出生那天</div>
+            <div class="weekday-info" id="weekdayInfo"></div>
+        </div>
+
+        <!-- 星座 & 生肖卡片 -->
+<div class="card hidden" id="zodiacShengxiaoCard">
+    <div class="card-title"><span class="icon">✨</span> 星座 & 生肖</div>
+    <div class="zodiac-sx-layout">
+        <div class="zodiac-sx-col" id="zodiacConstellation"></div>
+        <div class="zodiac-sx-divider"></div>
+        <div class="zodiac-sx-col" id="shengxiaoInfo"></div>
+    </div>
+</div>
+
+        <!-- 节气季节卡片 -->
+        <div class="card hidden" id="seasonCard">
+            <div class="card-title"><span class="icon">🌿</span> 节气 &amp; 季节</div>
+            <div class="season-info" id="seasonInfo"></div>
+        </div>
+
         <!-- Birthday Countdown Card -->
         <div class="card hidden" id="birthdayCard">
             <div class="card-title"><span class="icon">🎂</span> 生日倒计时</div>
             <div class="birthday-countdown" id="birthdayCountdown"></div>
-        </div>
-
-        <!-- Zodiac & Constellation Card -->
-        <div class="card hidden" id="zodiacCard">
-            <div class="card-title"><span class="icon">✨</span> 星座 & 生肖</div>
-            <div class="zodiac-constellation" id="zodiacConstellation"></div>
-        </div>
-
-        <!-- Life Stats Card -->
-        <div class="card hidden" id="lifeStatsCard">
-            <div class="card-title"><span class="icon">📊</span> 生命统计数据（估算）</div>
-            <div class="life-stats" id="lifeStats"></div>
         </div>
 
         <!-- Life Progress Card -->
@@ -863,6 +1223,55 @@
                 </div>
             </div>
         </div>
+
+        <!-- Life Stats Card -->
+        <div class="card hidden" id="lifeStatsCard">
+            <div class="card-title"><span class="icon">📊</span> 生命统计数据（估算）</div>
+            <div class="life-stats" id="lifeStats"></div>
+        </div>
+
+        <!-- 生命周历卡片 -->
+        <div class="card hidden" id="weekCalendarCard">
+            <div class="card-title"><span class="icon">🗓️</span> 生命周历</div>
+            <div class="week-calendar-desc">每格代表一周，已度过的已着色（寿命与上方生命进度一致）</div>
+            <div class="week-calendar" id="weekCalendar"></div>
+        </div>
+
+        <!-- 趣味年龄换算卡片 -->
+        <div class="card hidden" id="funAgeCard">
+            <div class="card-title"><span class="icon">🐾</span> 趣味年龄换算</div>
+            <div class="fun-age" id="funAge"></div>
+        </div>
+
+        <!-- 历史上的今天卡片 -->
+        <div class="card hidden" id="historyCard">
+            <div class="card-title"><span class="icon">📜</span> 历史上的今天</div>
+            <div class="history-info" id="historyInfo"></div>
+        </div>
+
+        <!-- 同日生名人卡片 -->
+        <div class="card hidden" id="famousCard">
+            <div class="card-title"><span class="icon">🌟</span> 同日生名人</div>
+            <div class="famous-list" id="famousList"></div>
+        </div>
+
+        <!-- 纪念日管理卡片 -->
+        <div class="card hidden" id="anniversaryCard">
+            <div class="card-title"><span class="icon">💝</span> 纪念日管理</div>
+            <div class="anniversary-section">
+                <div class="anniversary-add">
+                    <input type="text" id="anniversaryName" placeholder="纪念日名称（如恋爱纪念日）" maxlength="20">
+                    <input type="date" id="anniversaryDate">
+                    <button class="anniversary-btn" onclick="addAnniversary()">添加</button>
+                </div>
+                <div class="anniversary-list" id="anniversaryList"></div>
+            </div>
+        </div>
+
+        <footer class="site-footer">
+            <span class="footer-brand">🕐 年龄计算器</span>
+            <span class="footer-url">age.corevibe.cn</span>
+        </footer>
     </div>
 
     <script>
@@ -924,6 +1333,8 @@
             populateMinutes();
             setDefaultDate();
             onDateChange();
+            loadAnniversaries();
+            renderAnniversaries();
         }
 
         function populateYears() {
@@ -1203,16 +1614,19 @@
 
         // ========== Show/Hide Results ==========
         function showResults() {
-            var ids = ['coreCard', 'birthdayCard', 'zodiacCard', 'lifeStatsCard', 'progressCard'];
+            var ids = ['coreCard', 'weekdayCard', 'zodiacShengxiaoCard', 'seasonCard', 'birthdayCard', 'progressCard', 'lifeStatsCard', 'weekCalendarCard', 'funAgeCard', 'historyCard', 'famousCard', 'anniversaryCard'];
             for (var i = 0; i < ids.length; i++) {
                 document.getElementById(ids[i]).classList.remove('hidden');
             }
         }
 
         // ========== Real-time Update ==========
+        var lastUpdateDate = '';
+
         function startUpdating() {
             if (updateTimer) clearInterval(updateTimer);
             updateAll();
+            updateStaticCards();
             updateTimer = setInterval(updateAll, 1000);
         }
 
@@ -1223,9 +1637,30 @@
 
             updateCoreDisplay(now);
             updateBirthdayCountdown(now);
-            updateLifeStats(now);
             updateProgress();
+
+            // 只在日期变化时更新静态卡片
+            var todayStr = now.getFullYear() + '-' + now.getMonth() + '-' + now.getDate();
+            if (todayStr !== lastUpdateDate) {
+                lastUpdateDate = todayStr;
+                updateStaticCards();
+            }
+        }
+
+        function updateStaticCards() {
+            if (!birthSolarDate) return;
+            var now = new Date();
+            var diff = now.getTime() - birthSolarDate.getTime();
+            updateTotalStats(diff);
+            updateLifeStats(now);
             updateZodiacConstellation();
+            updateShengxiao();
+            updateWeekday();
+            updateWeekCalendar();
+            updateFunAge();
+            updateSeason();
+            updateHistory();
+            updateFamous();
         }
 
         // ========== Core Display ==========
@@ -1269,7 +1704,23 @@
                 prevSeconds = seconds;
             }
 
-            // Total stats
+            // Total stats - 只更新秒数（天/时/分在静态卡片中更新）
+            var totalSeconds = Math.floor(diff / 1000);
+            var totalStatsEl = document.getElementById('totalStats');
+            var secEl = totalStatsEl.querySelector('.total-stat:last-child .number');
+            if (secEl) {
+                secEl.textContent = totalSeconds.toLocaleString();
+            } else {
+                updateTotalStats(diff);
+            }
+        }
+
+        // ========== Total Stats ==========
+        function updateTotalStats(diff) {
+            if (!diff && birthSolarDate) {
+                diff = new Date().getTime() - birthSolarDate.getTime();
+            }
+            if (!diff) return;
             var totalSeconds = Math.floor(diff / 1000);
             var totalMinutes = Math.floor(totalSeconds / 60);
             var totalHours = Math.floor(totalMinutes / 60);
@@ -1332,6 +1783,7 @@
                     '<div class="date-info">' + solarDateInfo + '</div>' +
                     solarExtraHtml +
                 '</div>' +
+                '<div class="birthday-note">💡 阳历与农历倒计时天数不同是正常的，农历每年对应的阳历日期会变化</div>' +
                 '<div class="' + lunarClass + '">' +
                     '<div class="type">🌙 农历生日</div>' +
                     '<div class="days">' + lunarDaysHtml + '</div>' +
@@ -1372,64 +1824,132 @@
             };
         }
 
-        // ========== Zodiac & Constellation ==========
+        // ========== 星座 & 生肖 共享数据 ==========
+        var constellationData = {
+            '白羊座': { emoji: '♈', range: '3/21-4/19', element: '火', quality: '基本宫', ruler: '火星', lucky: { number: '1, 9', color: '红色', day: '星期二', gem: '钻石、红宝石' }, trait: '热情、冲动、勇敢', desc: '白羊座是黄道十二宫的第一个星座，象征着新生与开始。白羊座的人天生具有领导力，充满活力与冒险精神，做事果断，从不犹豫。', bestMatch: '♌ 狮子座', worstMatch: '♎ 天秤座' },
+            '金牛座': { emoji: '♉', range: '4/20-5/20', element: '土', quality: '固定宫', ruler: '金星', lucky: { number: '2, 6', color: '绿色', day: '星期五', gem: '祖母绿、翡翠' }, trait: '稳重、务实、耐心', desc: '金牛座脚踏实地，追求稳定与安全感。他们有着极高的审美品味，对美食、艺术和自然有着天生的鉴赏力，是最可靠的朋友和伴侣。', bestMatch: '♍ 处女座', worstMatch: '♏ 天蝎座' },
+            '双子座': { emoji: '♊', range: '5/21-6/21', element: '风', quality: '变动宫', ruler: '水星', lucky: { number: '3, 5', color: '黄色', day: '星期三', gem: '玛瑙、琥珀' }, trait: '机智、善变、好奇', desc: '双子座如同风一般自由，拥有双重性格的魅力。他们思维敏捷，善于沟通，对世界充满好奇，是天生的社交达人和信息传递者。', bestMatch: '♒ 水瓶座', worstMatch: '♍ 处女座' },
+            '巨蟹座': { emoji: '♋', range: '6/22-7/22', element: '水', quality: '基本宫', ruler: '月亮', lucky: { number: '2, 7', color: '白色', day: '星期一', gem: '珍珠、月光石' }, trait: '温柔、敏感、顾家', desc: '巨蟹座由月亮守护，情感丰富而细腻。他们重视家庭和亲密关系，有着强烈的保护欲和母性光辉，是最温暖的港湾。', bestMatch: '♏ 天蝎座', worstMatch: '♑ 摩羯座' },
+            '狮子座': { emoji: '♌', range: '7/23-8/22', element: '火', quality: '固定宫', ruler: '太阳', lucky: { number: '1, 5', color: '金色', day: '星期日', gem: '红宝石、橄榄石' }, trait: '自信、大方、领导力', desc: '狮子座由太阳守护，天生自带光芒。他们慷慨大方，有着王者般的气场和强烈的自尊心，在任何场合都能成为焦点。', bestMatch: '♐ 射手座', worstMatch: '♒ 水瓶座' },
+            '处女座': { emoji: '♍', range: '8/23-9/22', element: '土', quality: '变动宫', ruler: '水星', lucky: { number: '3, 6', color: '灰色', day: '星期三', gem: '蓝宝石、碧玺' }, trait: '细致、完美主义、勤奋', desc: '处女座追求完美，注重细节。他们有着出色的分析能力和服务精神，做事有条不紊，是最值得信赖的合作伙伴。', bestMatch: '♉ 金牛座', worstMatch: '♓ 双鱼座' },
+            '天秤座': { emoji: '♎', range: '9/23-10/23', element: '风', quality: '基本宫', ruler: '金星', lucky: { number: '6, 9', color: '粉色', day: '星期五', gem: '欧泊、蓝宝石' }, trait: '优雅、公正、社交', desc: '天秤座追求和谐与平衡，有着天生的审美和外交才能。他们优雅得体，善于在不同立场间找到平衡点，是天生的和平使者。', bestMatch: '♊ 双子座', worstMatch: '♑ 摩羯座' },
+            '天蝎座': { emoji: '♏', range: '10/24-11/22', element: '水', quality: '固定宫', ruler: '冥王星', lucky: { number: '0, 4', color: '暗红色', day: '星期二', gem: '黄玉、黑曜石' }, trait: '神秘、深沉、洞察力', desc: '天蝎座拥有最强烈的情感力量和洞察力。他们意志坚定，对感情专一而深沉，一旦认定目标便会全力以赴，不达目的誓不罢休。', bestMatch: '♋ 巨蟹座', worstMatch: '♉ 金牛座' },
+            '射手座': { emoji: '♐', range: '11/23-12/21', element: '火', quality: '变动宫', ruler: '木星', lucky: { number: '3, 7', color: '紫色', day: '星期四', gem: '绿松石、绿宝石' }, trait: '乐观、自由、冒险', desc: '射手座向往自由，热爱冒险和探索。他们乐观开朗，有着哲学家般的思考深度和旅行家般的行动力，永远在追寻生命的意义。', bestMatch: '♈ 白羊座', worstMatch: '♊ 双子座' },
+            '摩羯座': { emoji: '♑', range: '12/22-1/19', element: '土', quality: '基本宫', ruler: '土星', lucky: { number: '4, 8', color: '黑色', day: '星期六', gem: '石榴石、黑玛瑙' }, trait: '踏实、有野心、自律', desc: '摩羯座是最有毅力和耐心的星座。他们目标明确，脚踏实地，有着强烈的责任感和事业心，是十二星座中最有可能取得世俗成功的。', bestMatch: '♉ 金牛座', worstMatch: '♈ 白羊座' },
+            '水瓶座': { emoji: '♒', range: '1/20-2/18', element: '风', quality: '固定宫', ruler: '天王星', lucky: { number: '4, 7', color: '天蓝色', day: '星期六', gem: '紫水晶、海蓝宝' }, trait: '独立、创新、人道主义', desc: '水瓶座是最具前瞻性和创新精神的星座。他们思想独立，不走寻常路，关注人类整体的福祉，是时代的先驱和变革者。', bestMatch: '♊ 双子座', worstMatch: '♏ 天蝎座' },
+            '双鱼座': { emoji: '♓', range: '2/19-3/20', element: '水', quality: '变动宫', ruler: '海王星', lucky: { number: '3, 9', color: '海蓝色', day: '星期四', gem: '海蓝宝石、月长石' }, trait: '浪漫、善良、直觉强', desc: '双鱼座是十二星座的最后一个，融合了所有星座的特质。他们富有同理心和想象力，艺术天赋极高，是最具灵性和治愈力的存在。', bestMatch: '♋ 巨蟹座', worstMatch: '♍ 处女座' }
+        };
+
+        var elementDescData = {
+            '火': { cls: 'element-fire', text: '火象星座（白羊、狮子、射手）充满热情与活力，行动力强，是天生的领导者。火象人热情洋溢、积极进取，但有时过于冲动，需要学会控制情绪。代表色为红色，象征热情与力量。' },
+            '土': { cls: 'element-earth', text: '土象星座（金牛、处女、摩羯）稳重踏实，注重实际。土象人可靠、有耐心，追求物质和精神的双重稳定，是最值得信赖的伙伴。代表色为绿色与棕色，象征大地与丰收。' },
+            '风': { cls: 'element-air', text: '风象星座（双子、天秤、水瓶）聪慧善辩，思维敏捷。风象人社交能力强，热爱自由和交流，是思想的传播者和创新的推动者。代表色为天蓝色，象征天空与自由。' },
+            '水': { cls: 'element-water', text: '水象星座（巨蟹、天蝎、双鱼）情感丰富，直觉敏锐。水象人善解人意，有着强大的共情能力和艺术天赋，是最具治愈力的存在。代表色为海蓝色，象征海洋与深邃。' }
+        };
+
+        var shengxiaoData = {
+            '鼠': { emoji: '🐭', wuxing: '水', wuxingEmoji: '💧', yinyang: '阳', desc: '属鼠人机智灵活，适应力极强。他们善于观察和分析，有着出色的社交能力和商业头脑。鼠年出生的人通常聪明伶俐，反应敏捷，能够在各种环境中迅速找到生存之道。', lucky: { number: '2, 3', color: '蓝色、金色、绿色', flower: '百合、非洲紫罗兰', direction: '东南、东北' } },
+            '牛': { emoji: '🐮', wuxing: '土', wuxingEmoji: '🏔️', yinyang: '阴', desc: '属牛人勤劳踏实，坚韧不拔。他们有着极强的耐心和毅力，做事一步一个脚印，从不投机取巧。牛年出生的人诚实可靠，是值得终身信赖的朋友和伙伴。', lucky: { number: '1, 4', color: '白色、黄色、绿色', flower: '郁金香、向日葵', direction: '东南、正北' } },
+            '虎': { emoji: '🐯', wuxing: '木', wuxingEmoji: '🌳', yinyang: '阳', desc: '属虎人勇敢自信，充满活力。他们天生具有领袖气质，敢于冒险，不畏困难。虎年出生的人热情慷慨，有着强烈的正义感和保护弱小的勇气。', lucky: { number: '1, 3', color: '橙色、灰色、蓝色', flower: '桔梗、万年青', direction: '正南、东北' } },
+            '兔': { emoji: '🐰', wuxing: '木', wuxingEmoji: '🌳', yinyang: '阴', desc: '属兔人温和善良，心思细腻。他们有着极高的情商和审美品味，善于营造和谐的氛围。兔年出生的人优雅文静，待人友善，是十二生肖中最受欢迎的之一。', lucky: { number: '3, 4', color: '红色、粉色、紫色', flower: '茉莉、菊花', direction: '正东、西北' } },
+            '龙': { emoji: '🐲', wuxing: '土', wuxingEmoji: '🏔️', yinyang: '阳', desc: '属龙人气宇轩昂，充满魅力。龙是十二生肖中最尊贵的象征，龙年出生的人天生自带气场，志向远大，有着非凡的创造力和领导才能。', lucky: { number: '1, 6', color: '金色、银色、灰白色', flower: '龙胆花、茉莉', direction: '正北、西北' } },
+            '蛇': { emoji: '🐍', wuxing: '火', wuxingEmoji: '🔥', yinyang: '阴', desc: '属蛇人智慧深沉，直觉敏锐。他们善于思考，有着独特的洞察力和判断力。蛇年出生的人外表冷静内心热情，做事谨慎而果断，是最具智慧的生肖之一。', lucky: { number: '2, 8', color: '红色、浅黄色、黑色', flower: '兰花、仙人掌', direction: '正南、西南' } },
+            '马': { emoji: '🐴', wuxing: '火', wuxingEmoji: '🔥', yinyang: '阳', desc: '属马人热情奔放，自由独立。他们精力充沛，行动力强，热爱自由和旅行。马年出生的人乐观开朗，善于社交，有着感染他人的积极能量。', lucky: { number: '2, 3', color: '黄色、绿色、红色', flower: '向日葵、茉莉', direction: '东南、西北' } },
+            '羊': { emoji: '🐑', wuxing: '土', wuxingEmoji: '🏔️', yinyang: '阴', desc: '属羊人温文尔雅，富有艺术感。他们心地善良，有着丰富的内心世界和极高的审美天赋。羊年出生的人温柔体贴，善于体贴他人，是最具艺术气质的生肖。', lucky: { number: '2, 7', color: '绿色、红色、紫色', flower: '康乃馨、百合', direction: '正北、正南' } },
+            '猴': { emoji: '🐵', wuxing: '金', wuxingEmoji: '⚙️', yinyang: '阳', desc: '属猴人聪明伶俐，幽默风趣。他们思维活跃，学习能力极强，善于模仿和创新。猴年出生的人机智灵活，有着出色的应变能力和表演天赋。', lucky: { number: '4, 9', color: '白色、蓝色、金色', flower: '菊花、杜鹃', direction: '正北、西北' } },
+            '鸡': { emoji: '🐔', wuxing: '金', wuxingEmoji: '⚙️', yinyang: '阴', desc: '属鸡人勤奋守时，责任心强。他们观察力敏锐，做事认真细致，有着强烈的自我要求和完美主义倾向。鸡年出生的人坦诚直率，是值得信赖的伙伴。', lucky: { number: '5, 7', color: '金色、棕色、黄色', flower: '大丽花、万寿菊', direction: '正西、西南' } },
+            '狗': { emoji: '🐶', wuxing: '土', wuxingEmoji: '🏔️', yinyang: '阳', desc: '属狗人忠诚正直，勇敢无畏。他们有着强烈的正义感和责任感，对朋友和家人忠心耿耿。狗年出生的人诚实可靠，是最忠诚的朋友和守护者。', lucky: { number: '3, 4', color: '红色、绿色、紫色', flower: '玫瑰、紫罗兰', direction: '正东、正南' } },
+            '猪': { emoji: '🐷', wuxing: '水', wuxingEmoji: '💧', yinyang: '阴', desc: '属猪人豁达乐观，真诚待人。他们心地善良，有着宽广的胸怀和包容心。猪年出生的人福气满满，慷慨大方，是十二生肖中最有福气的存在。', lucky: { number: '2, 5', color: '黄色、灰色、棕色', flower: '绣球花、牡丹', direction: '东北、正东' } }
+        };
+
+        // ========== 星座卡片 ==========
         function updateZodiacConstellation() {
             var container = document.getElementById('zodiacConstellation');
             var year = birthSolarDate.getFullYear();
             var month = birthSolarDate.getMonth() + 1;
             var day = birthSolarDate.getDate();
 
-            // Get constellation from lunar-javascript
+            var solar = Solar.fromYmd(year, month, day);
+            var xingzuoName = solar.getXingZuo();
+            // getXingZuo() 返回 "双子" 格式，需要补全为 "双子座"
+            var xingzuoKey = xingzuoName + '座';
+            var cInfo = constellationData[xingzuoKey] || constellationData[xingzuoName] || { emoji: '⭐', range: '', element: '', quality: '', ruler: '', lucky: { number: '', color: '', day: '', gem: '' }, trait: '', desc: '', bestMatch: '', worstMatch: '' };
+            var eInfo = elementDescData[cInfo.element] || { cls: '', text: '' };
+
+            // 显示用完整名称
+            var xingzuoDisplay = xingzuoKey;
+
+            var html = '';
+
+            // 头部：emoji + 名称 + 关键词
+            html += '<div class="zs-header">' +
+                '<span class="zs-emoji">' + cInfo.emoji + '</span>' +
+                '<div class="zs-header-text">' +
+                    '<div class="zs-name">' + xingzuoDisplay + '</div>' +
+                    '<div class="zs-sub">' + cInfo.range + ' · ' + cInfo.element + '象 · ' + cInfo.quality + '</div>' +
+                '</div>' +
+            '</div>';
+
+            // 详细信息网格（3列）
+            html += '<div class="zs-grid">' +
+                '<div class="zs-grid-item"><span class="zs-label">守护星</span><span class="zs-value">' + cInfo.ruler + '</span></div>' +
+                '<div class="zs-grid-item"><span class="zs-label">幸运数字</span><span class="zs-value">' + cInfo.lucky.number + '</span></div>' +
+                '<div class="zs-grid-item"><span class="zs-label">幸运颜色</span><span class="zs-value">' + cInfo.lucky.color + '</span></div>' +
+                '<div class="zs-grid-item"><span class="zs-label">幸运日</span><span class="zs-value">' + cInfo.lucky.day + '</span></div>' +
+                '<div class="zs-grid-item"><span class="zs-label">幸运宝石</span><span class="zs-value">' + cInfo.lucky.gem + '</span></div>' +
+                '<div class="zs-grid-item"><span class="zs-label">关键词</span><span class="zs-value" style="color:var(--accent)">' + cInfo.trait + '</span></div>' +
+            '</div>';
+
+            // 配对
+            html += '<div class="zs-match-row-wrap">' +
+                '<span class="zs-match-label">💕 最佳</span><span class="zs-match-value good">' + cInfo.bestMatch + '</span>' +
+                '<span class="zs-match-label">💔 磨合</span><span class="zs-match-value bad">' + cInfo.worstMatch + '</span>' +
+            '</div>';
+
+            // 性格解读
+            html += '<div class="zs-desc">' + cInfo.desc + '</div>';
+
+            container.innerHTML = html;
+        }
+
+        // ========== 生肖卡片 ==========
+        function updateShengxiao() {
+            var container = document.getElementById('shengxiaoInfo');
+            var year = birthSolarDate.getFullYear();
+            var month = birthSolarDate.getMonth() + 1;
+            var day = birthSolarDate.getDate();
+
             var solar = Solar.fromYmd(year, month, day);
             var lunar = solar.getLunar();
+            var shengxiaoRaw = lunar.getYearShengXiao();
+            var shengxiao = shengxiaoRaw.replace(/^属/, '');
+            var zInfo = shengxiaoData[shengxiao] || shengxiaoData[shengxiaoRaw] || { emoji: '🐾', wuxing: '', wuxingEmoji: '', yinyang: '', desc: '', lucky: { number: '', color: '', flower: '', direction: '' } };
 
-            var constellation = {
-                '白羊座': { emoji: '♈', range: '3/21-4/19', element: '火', trait: '热情、冲动、勇敢' },
-                '金牛座': { emoji: '♉', range: '4/20-5/20', element: '土', trait: '稳重、务实、耐心' },
-                '双子座': { emoji: '♊', range: '5/21-6/21', element: '风', trait: '机智、善变、好奇' },
-                '巨蟹座': { emoji: '♋', range: '6/22-7/22', element: '水', trait: '温柔、敏感、顾家' },
-                '狮子座': { emoji: '♌', range: '7/23-8/22', element: '火', trait: '自信、大方、领导力' },
-                '处女座': { emoji: '♍', range: '8/23-9/22', element: '土', trait: '细致、完美主义、勤奋' },
-                '天秤座': { emoji: '♎', range: '9/23-10/23', element: '风', trait: '优雅、公正、社交' },
-                '天蝎座': { emoji: '♏', range: '10/24-11/22', element: '水', trait: '神秘、深沉、洞察力' },
-                '射手座': { emoji: '♐', range: '11/23-12/21', element: '火', trait: '乐观、自由、冒险' },
-                '摩羯座': { emoji: '♑', range: '12/22-1/19', element: '土', trait: '踏实、有野心、自律' },
-                '水瓶座': { emoji: '♒', range: '1/20-2/18', element: '风', trait: '独立、创新、人道主义' },
-                '双鱼座': { emoji: '♓', range: '2/19-3/20', element: '水', trait: '浪漫、善良、直觉强' }
-            };
+            var html = '';
 
-            var zodiacAnimals = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
-            var zodiacEmojis = ['🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑', '🐵', '🐔', '🐶', '🐷'];
-            var zodiacTraits = [
-                '机智灵活、适应力强', '勤劳踏实、坚韧不拔', '勇敢自信、充满活力',
-                '温和善良、心思细腻', '气宇轩昂、领导才能', '智慧深沉、直觉敏锐',
-                '热情奔放、自由独立', '温文尔雅、富有艺术感', '聪明伶俐、幽默风趣',
-                '勤奋守时、责任心强', '忠诚正直、勇敢无畏', '豁达乐观、真诚待人'
-            ];
-
-            var shengxiao = lunar.getYearShengXiao();
-            var zodiacIndex = zodiacAnimals.indexOf(shengxiao);
-
-            var xingzuoName = solar.getXingZuo();
-            var cInfo = constellation[xingzuoName] || { emoji: '⭐', range: '', element: '', trait: '' };
-
-            var zodiacEmoji = zodiacIndex >= 0 ? zodiacEmojis[zodiacIndex] : '🐾';
-            var zodiacTrait = zodiacIndex >= 0 ? zodiacTraits[zodiacIndex] : '';
-
-            container.innerHTML =
-                '<div class="zodiac-item">' +
-                    '<div class="emoji">' + cInfo.emoji + '</div>' +
-                    '<div class="name">' + xingzuoName + '</div>' +
-                    '<div class="info">' + cInfo.range + '</div>' +
-                    '<div class="info">' + cInfo.element + '象星座</div>' +
-                    '<div class="info" style="margin-top:4px;color:var(--accent)">' + cInfo.trait + '</div>' +
+            // 头部：emoji + 名称 + 关键词
+            html += '<div class="zs-header">' +
+                '<span class="zs-emoji">' + zInfo.emoji + '</span>' +
+                '<div class="zs-header-text">' +
+                    '<div class="zs-name">属' + shengxiao + '</div>' +
+                    '<div class="zs-sub">' + zInfo.wuxingEmoji + '五行' + zInfo.wuxing + ' · ' + zInfo.yinyang + '</div>' +
                 '</div>' +
-                '<div class="zodiac-item">' +
-                    '<div class="emoji">' + zodiacEmoji + '</div>' +
-                    '<div class="name">' + shengxiao + '年</div>' +
-                    '<div class="info">十二生肖</div>' +
-                    '<div class="info" style="margin-top:4px;color:var(--accent)">' + zodiacTrait + '</div>' +
-                '</div>';
+            '</div>';
+
+            // 详细信息网格（3列）
+            html += '<div class="zs-grid">' +
+                '<div class="zs-grid-item"><span class="zs-label">五行</span><span class="zs-value">' + zInfo.wuxingEmoji + ' ' + zInfo.wuxing + '</span></div>' +
+                '<div class="zs-grid-item"><span class="zs-label">阴阳</span><span class="zs-value">' + zInfo.yinyang + '</span></div>' +
+                '<div class="zs-grid-item"><span class="zs-label">幸运数字</span><span class="zs-value">' + zInfo.lucky.number + '</span></div>' +
+                '<div class="zs-grid-item"><span class="zs-label">幸运颜色</span><span class="zs-value">' + zInfo.lucky.color + '</span></div>' +
+                '<div class="zs-grid-item"><span class="zs-label">幸运花</span><span class="zs-value">' + zInfo.lucky.flower + '</span></div>' +
+                '<div class="zs-grid-item"><span class="zs-label">吉利方位</span><span class="zs-value">' + zInfo.lucky.direction + '</span></div>' +
+            '</div>';
+
+            // 性格解读
+            html += '<div class="zs-desc">' + zInfo.desc + '</div>';
+
+            container.innerHTML = html;
         }
 
         // ========== Life Stats ==========
@@ -1503,6 +2023,583 @@
             else if (age < 55) stage = '💼 中年';
             else stage = '🍵 老年';
             document.getElementById('lifeStage').textContent = stage;
+        }
+
+        // ========== 星期几 ==========
+        function updateWeekday() {
+            if (!birthSolarDate) return;
+            var weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            var weekday = weekdays[birthSolarDate.getDay()];
+            var now = new Date();
+            var totalWeeks = Math.floor((now.getTime() - birthSolarDate.getTime()) / (7 * 24 * 3600 * 1000));
+            var totalDays = Math.floor((now.getTime() - birthSolarDate.getTime()) / (24 * 3600 * 1000));
+            var el = document.getElementById('weekdayInfo');
+            el.innerHTML = '<div class="weekday-main">' + weekday + '</div>' +
+                '<div class="weekday-details">' +
+                '距今已过 <strong>' + totalDays + '</strong> 天，约 <strong>' + totalWeeks + '</strong> 周<br>' +
+                '出生日期：' + birthSolarDate.getFullYear() + '年' + (birthSolarDate.getMonth() + 1) + '月' + birthSolarDate.getDate() + '日' +
+                '</div>';
+        }
+
+        // ========== 生命周历 ==========
+        function updateWeekCalendar() {
+            if (!birthSolarDate) return;
+            var now = new Date();
+            var lifeYears = parseInt(document.getElementById('lifeExpectancy').value) || 75;
+            var totalWeeks = lifeYears * 52;
+            var livedWeeks = Math.floor((now.getTime() - birthSolarDate.getTime()) / (7 * 24 * 3600 * 1000));
+            if (livedWeeks < 0) livedWeeks = 0;
+            if (livedWeeks > totalWeeks) livedWeeks = totalWeeks;
+            var el = document.getElementById('weekCalendar');
+            var html = '';
+            for (var i = 0; i < totalWeeks; i++) {
+                var cls = 'week-cell';
+                if (i < livedWeeks) cls += ' lived';
+                if (i === livedWeeks) cls += ' current';
+                html += '<div class="' + cls + '" title="第' + (i + 1) + '周"></div>';
+            }
+            el.innerHTML = html;
+        }
+
+        // ========== 趣味年龄换算 ==========
+        function updateFunAge() {
+            if (!birthSolarDate) return;
+            var now = new Date();
+            var days = (now.getTime() - birthSolarDate.getTime()) / (24 * 3600 * 1000);
+            var el = document.getElementById('funAge');
+            el.innerHTML =
+                '<div class="fun-age-item"><div class="fun-icon">🐶</div><div class="fun-value">' + (days / 365 * 7).toFixed(1) + ' 岁</div><div class="fun-label">狗年</div></div>' +
+                '<div class="fun-age-item"><div class="fun-icon">🐱</div><div class="fun-value">' + (days / 365 * 9).toFixed(1) + ' 岁</div><div class="fun-label">猫年</div></div>' +
+                '<div class="fun-age-item"><div class="fun-icon">🐮</div><div class="fun-value">' + (days / 365 * 5).toFixed(1) + ' 岁</div><div class="fun-label">牛年</div></div>' +
+                '<div class="fun-age-item"><div class="fun-icon">🐔</div><div class="fun-value">' + (days / 365 * 14).toFixed(1) + ' 岁</div><div class="fun-label">鸡年</div></div>' +
+                '<div class="fun-age-item"><div class="fun-icon">🐘</div><div class="fun-value">' + (days / 365 * 2.5).toFixed(1) + ' 岁</div><div class="fun-label">大象年</div></div>' +
+                '<div class="fun-age-item"><div class="fun-icon">🪰</div><div class="fun-value">' + (days / 7).toFixed(1) + ' 天</div><div class="fun-label">果蝇寿命</div></div>' +
+                '<div class="fun-age-item"><div class="fun-icon">🌙</div><div class="fun-value">' + (days * 12.37).toFixed(0) + ' 次</div><div class="fun-label">月圆次数</div></div>' +
+                '<div class="fun-age-item"><div class="fun-icon">🌍</div><div class="fun-value">' + (days * 24).toFixed(0) + ' 次</div><div class="fun-label">地球自转</div></div>';
+        }
+
+        // ========== 节气季节 ==========
+        function updateSeason() {
+            if (!birthSolarDate) return;
+            var month = birthSolarDate.getMonth() + 1;
+            var day = birthSolarDate.getDate();
+            var seasons = ['🌸 春季', '☀️ 夏季', '🍂 秋季', '❄️ 冬季'];
+            var seasonIndex = 0;
+            if (month >= 3 && month <= 5) seasonIndex = 0;
+            else if (month >= 6 && month <= 8) seasonIndex = 1;
+            else if (month >= 9 && month <= 11) seasonIndex = 2;
+            else seasonIndex = 3;
+            // 24节气近似计算
+            var solarTerms = [
+                {name: '小寒', m:1, d:6}, {name: '大寒', m:1, d:20},
+                {name: '立春', m:2, d:4}, {name: '雨水', m:2, d:19},
+                {name: '惊蛰', m:3, d:6}, {name: '春分', m:3, d:21},
+                {name: '清明', m:4, d:5}, {name: '谷雨', m:4, d:20},
+                {name: '立夏', m:5, d:6}, {name: '小满', m:5, d:21},
+                {name: '芒种', m:6, d:6}, {name: '夏至', m:6, d:21},
+                {name: '小暑', m:7, d:7}, {name: '大暑', m:7, d:23},
+                {name: '立秋', m:8, d:7}, {name: '处暑', m:8, d:23},
+                {name: '白露', m:9, d:8}, {name: '秋分', m:9, d:23},
+                {name: '寒露', m:10, d:8}, {name: '霜降', m:10, d:23},
+                {name: '立冬', m:11, d:7}, {name: '小雪', m:11, d:22},
+                {name: '大雪', m:12, d:7}, {name: '冬至', m:12, d:22}
+            ];
+            var currentTerm = '';
+            var nextTerm = '';
+            for (var i = 0; i < solarTerms.length; i++) {
+                var t = solarTerms[i];
+                if (month < t.m || (month === t.m && day < t.d)) {
+                    nextTerm = t.name;
+                    currentTerm = i > 0 ? solarTerms[i - 1].name : solarTerms[solarTerms.length - 1].name;
+                    break;
+                }
+                if (i === solarTerms.length - 1) {
+                    currentTerm = t.name;
+                    nextTerm = solarTerms[0].name;
+                }
+            }
+            var shengxiao = '';
+            try {
+                var s = Solar.fromYmd(birthSolarDate.getFullYear(), birthSolarDate.getMonth() + 1, birthSolarDate.getDate());
+                var l = s.getLunar();
+                shengxiao = l.getYearShengXiao();
+            } catch(e) {}
+            if (!shengxiao) {
+                var zodiacs = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
+                shengxiao = zodiacs[(birthSolarDate.getFullYear() - 4) % 12];
+            }
+            var el = document.getElementById('seasonInfo');
+            el.innerHTML = '<div class="season-main">' + seasons[seasonIndex] + '</div>' +
+                '<div class="season-details">' +
+                '出生节气：' + currentTerm + '（下一个：' + nextTerm + '）<br>' +
+                '生肖：' + shengxiao + '<br>' +
+                '季节：' + ['春', '夏', '秋', '冬'][seasonIndex] +
+                '</div>';
+        }
+
+        // ========== 历史上的今天 ==========
+        var historyCache = {}; // 缓存已获取的数据
+        var historyLoading = false;
+
+        function updateHistory() {
+            if (!birthSolarDate) return;
+            var month = birthSolarDate.getMonth() + 1;
+            var day = birthSolarDate.getDate();
+            var key = month + '-' + day;
+            var el = document.getElementById('historyInfo');
+
+            // 如果已有缓存，直接渲染
+            if (historyCache[key]) {
+                renderHistory(el, historyCache[key], month, day);
+                return;
+            }
+
+            // 显示加载状态
+            el.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">加载中...</div>';
+
+            // 优先级1：mxnzp 国内 API（仅支持当天日期）
+            var now = new Date();
+            var isToday = (month === now.getMonth() + 1 && day === now.getDate());
+            if (isToday) {
+                fetchMxnzpHistory(month, day, function(data) {
+                    if (data && data.length > 0) {
+                        historyCache[key] = data;
+                        renderHistory(el, data, month, day);
+                    } else {
+                        fetchHistoryFallback(month, day, el, key);
+                    }
+                });
+            } else {
+                fetchHistoryFallback(month, day, el, key);
+            }
+        }
+
+        function fetchHistoryFallback(month, day, el, key) {
+            // 优先级2：Wikipedia 中文 API
+            fetchWikipediaHistory(month, day, function(data) {
+                if (data && data.length > 0) {
+                    historyCache[key] = data;
+                    renderHistory(el, data, month, day);
+                } else {
+                    // 优先级3：zenquotes API
+                    fetchZenquotesHistory(month, day, function(data2) {
+                        if (data2 && data2.length > 0) {
+                            historyCache[key] = data2;
+                            renderHistory(el, data2, month, day);
+                        } else {
+                            // 优先级4：静态数据兜底
+                            var staticData = getStaticHistory(key);
+                            historyCache[key] = staticData;
+                            renderHistory(el, staticData, month, day);
+                        }
+                    });
+                }
+            });
+        }
+
+        function fetchMxnzpHistory(month, day, callback) {
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://www.mxnzp.com/api/history/today?type=0&app_id=venqtrqrvhsttwbe&app_secret=wMDg8cJdXXxG9xmvlqGk98FenM6WSg5E', true);
+                xhr.timeout = 5000;
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            try {
+                                var json = JSON.parse(xhr.responseText);
+                                if (json.code === 1 && json.data && json.data.length > 0) {
+                                    var result = [];
+                                    for (var i = 0; i < Math.min(json.data.length, 8); i++) {
+                                        var item = json.data[i];
+                                        result.push({ y: parseInt(item.year) || 0, e: item.title || '' });
+                                    }
+                                    callback(result);
+                                } else {
+                                    callback(null);
+                                }
+                            } catch(e) { callback(null); }
+                        } else {
+                            callback(null);
+                        }
+                    }
+                };
+                xhr.ontimeout = function() { callback(null); };
+                xhr.onerror = function() { callback(null); };
+                xhr.send();
+            } catch(e) { callback(null); }
+        }
+
+        function fetchWikipediaHistory(month, day, callback) {
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://zh.wikipedia.org/api/rest_v1/feed/onthisday/events/' + month + '/' + day, true);
+                xhr.timeout = 5000;
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            try {
+                                var json = JSON.parse(xhr.responseText);
+                                var events = json.events || json.selected || [];
+                                var result = [];
+                                for (var i = 0; i < Math.min(events.length, 8); i++) {
+                                    var ev = events[i];
+                                    var text = ev.text || '';
+                                    // 去除 HTML 标签
+                                    text = text.replace(/<[^>]*>/g, '');
+                                    // 提取年份
+                                    var yearMatch = text.match(/^(-?\d+)\s*(.*)/);
+                                    if (yearMatch) {
+                                        result.push({ y: parseInt(yearMatch[1]), e: yearMatch[2] });
+                                    } else {
+                                        result.push({ y: 0, e: text });
+                                    }
+                                }
+                                callback(result);
+                            } catch(e) { callback(null); }
+                        } else {
+                            callback(null);
+                        }
+                    }
+                };
+                xhr.ontimeout = function() { callback(null); };
+                xhr.onerror = function() { callback(null); };
+                xhr.send();
+            } catch(e) { callback(null); }
+        }
+
+        function fetchZenquotesHistory(month, day, callback) {
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://today.zenquotes.io/api/' + month + '/' + day, true);
+                xhr.timeout = 5000;
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            try {
+                                var json = JSON.parse(xhr.responseText);
+                                var events = (json.data && json.data.Events) || [];
+                                var result = [];
+                                for (var i = 0; i < Math.min(events.length, 8); i++) {
+                                    var text = events[i].text || '';
+                                    text = text.replace(/<[^>]*>/g, '');
+                                    // 提取年份
+                                    var yearMatch = text.match(/^(-?\d+)\s*[–\-—]\s*(.*)/);
+                                    if (yearMatch) {
+                                        result.push({ y: parseInt(yearMatch[1]), e: yearMatch[2] });
+                                    } else {
+                                        result.push({ y: 0, e: text });
+                                    }
+                                }
+                                callback(result);
+                            } catch(e) { callback(null); }
+                        } else {
+                            callback(null);
+                        }
+                    }
+                };
+                xhr.ontimeout = function() { callback(null); };
+                xhr.onerror = function() { callback(null); };
+                xhr.send();
+            } catch(e) { callback(null); }
+        }
+
+        function getStaticHistory(key) {
+            var events = {
+                '1-1': [{y:1912, e:'中华民国成立'},{y:1942, e:'《联合国家宣言》签署'},{y:2002, e:'欧元纸币和硬币正式流通'}],
+                '1-15': [{y:2001, e:'维基百科正式上线'}],
+                '2-12': [{y:1809, e:'查尔斯·达尔文出生'},{y:1809, e:'亚伯拉罕·林肯出生'}],
+                '3-14': [{y:1879, e:'阿尔伯特·爱因斯坦出生'},{y:2018, e:'斯蒂芬·霍金逝世'}],
+                '4-1': [{y:1976, e:'苹果公司成立'},{y:2004, e:'谷歌IPO上市'}],
+                '4-12': [{y:1961, e:'人类首次进入太空（加加林）'}],
+                '4-22': [{y:1970, e:'第一个地球日'}],
+                '5-1': [{y:1886, e:'芝加哥工人大罢工'},{y:2011, e:'本·拉登被击毙'}],
+                '5-5': [{y:1818, e:'卡尔·马克思出生'}],
+                '5-12': [{y:1820, e:'弗洛伦斯·南丁格尔出生'}],
+                '6-1': [{y:1925, e:'儿童节正式确立'}],
+                '6-6': [{y:1944, e:'诺曼底登陆（D-Day）'}],
+                '7-4': [{y:1776, e:'美国独立宣言签署'}],
+                '7-20': [{y:1969, e:'阿波罗11号登月'}],
+                '8-8': [{y:2008, e:'北京奥运会开幕'}],
+                '9-11': [{y:2001, e:'美国9·11事件'}],
+                '10-1': [{y:1949, e:'中华人民共和国成立'},{y:1964, e:'日本新干线通车'}],
+                '10-4': [{y:1957, e:'人造卫星首次升空（斯普特尼克1号）'}],
+                '10-24': [{y:1945, e:'联合国成立'}],
+                '11-9': [{y:1989, e:'柏林墙倒塌'}],
+                '11-11': [{y:1918, e:'第一次世界大战结束'}],
+                '12-1': [{y:1955, e:'罗莎·帕克斯拒绝让座事件'}],
+                '12-10': [{y:1948, e:'《世界人权宣言》通过'}],
+                '12-17': [{y:1903, e:'莱特兄弟首次飞行'}],
+                '12-25': [{y:1642, e:'艾萨克·牛顿出生'}]
+            };
+            return events[key] || [];
+        }
+
+        function renderHistory(el, list, month, day) {
+            if (!list || list.length === 0) {
+                el.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">' +
+                    '📅 ' + month + '月' + day + '日<br><br>这一天在历史上留下了属于你的印记 🌟</div>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < list.length; i++) {
+                var yearStr = list[i].y ? list[i].y + '年' : '';
+                html += '<div class="history-item"><span class="history-year">' + yearStr + '</span>' + list[i].e + '</div>';
+            }
+            el.innerHTML = html;
+        }
+
+        // ========== 同日生名人 ==========
+        var famousCache = {}; // 缓存已获取的数据
+
+        function updateFamous() {
+            if (!birthSolarDate) return;
+            var month = birthSolarDate.getMonth() + 1;
+            var day = birthSolarDate.getDate();
+            var key = month + '-' + day;
+            var el = document.getElementById('famousList');
+
+            // 如果已有缓存，直接渲染
+            if (famousCache[key]) {
+                renderFamous(el, famousCache[key], month, day);
+                return;
+            }
+
+            // 显示加载状态
+            el.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">加载中...</div>';
+
+            // 先尝试 Wikipedia 中文 API
+            fetchWikipediaBirths(month, day, function(data) {
+                if (data && data.length > 0) {
+                    famousCache[key] = data;
+                    renderFamous(el, data, month, day);
+                } else {
+                    // 备用：zenquotes API
+                    fetchZenquotesBirths(month, day, function(data2) {
+                        if (data2 && data2.length > 0) {
+                            famousCache[key] = data2;
+                            renderFamous(el, data2, month, day);
+                        } else {
+                            // 兜底：静态数据
+                            var staticData = getStaticFamous(key);
+                            famousCache[key] = staticData;
+                            renderFamous(el, staticData, month, day);
+                        }
+                    });
+                }
+            });
+        }
+
+        function fetchWikipediaBirths(month, day, callback) {
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://zh.wikipedia.org/api/rest_v1/feed/onthisday/births/' + month + '/' + day, true);
+                xhr.timeout = 5000;
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            try {
+                                var json = JSON.parse(xhr.responseText);
+                                var births = json.births || json.selected || [];
+                                var result = [];
+                                for (var i = 0; i < Math.min(births.length, 10); i++) {
+                                    var b = births[i];
+                                    var text = b.text || '';
+                                    // 去除 HTML 标签
+                                    text = text.replace(/<[^>]*>/g, '');
+                                    // 提取年份和名字
+                                    var yearMatch = text.match(/^(-?\d+)\s*[–\-—]\s*(.*)/);
+                                    if (yearMatch) {
+                                        result.push({ n: yearMatch[2], d: yearMatch[1] + '年出生', e: '🌟' });
+                                    } else {
+                                        result.push({ n: text, d: '', e: '🌟' });
+                                    }
+                                }
+                                callback(result);
+                            } catch(e) { callback(null); }
+                        } else {
+                            callback(null);
+                        }
+                    }
+                };
+                xhr.ontimeout = function() { callback(null); };
+                xhr.onerror = function() { callback(null); };
+                xhr.send();
+            } catch(e) { callback(null); }
+        }
+
+        function fetchZenquotesBirths(month, day, callback) {
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://today.zenquotes.io/api/' + month + '/' + day, true);
+                xhr.timeout = 5000;
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            try {
+                                var json = JSON.parse(xhr.responseText);
+                                var births = (json.data && json.data.Births) || [];
+                                var result = [];
+                                for (var i = 0; i < Math.min(births.length, 10); i++) {
+                                    var text = births[i].text || '';
+                                    text = text.replace(/<[^>]*>/g, '');
+                                    var yearMatch = text.match(/^(-?\d+)\s*[–\-—]\s*(.*)/);
+                                    if (yearMatch) {
+                                        result.push({ n: yearMatch[2], d: yearMatch[1] + '年出生', e: '🌟' });
+                                    } else {
+                                        result.push({ n: text, d: '', e: '🌟' });
+                                    }
+                                }
+                                callback(result);
+                            } catch(e) { callback(null); }
+                        } else {
+                            callback(null);
+                        }
+                    }
+                };
+                xhr.ontimeout = function() { callback(null); };
+                xhr.onerror = function() { callback(null); };
+                xhr.send();
+            } catch(e) { callback(null); }
+        }
+
+        function getStaticFamous(key) {
+            var famousData = {
+                '1-1': [{n:'J.D.塞林格', d:'《麦田里的守望者》作者', e:'📚'},{n:'维韦卡南达', d:'印度哲学家', e:'🧘'}],
+                '1-8': [{n:'Elvis Presley', d:'摇滚之王', e:'🎵'},{n:'金正恩', d:'朝鲜领导人', e:'🇰🇵'}],
+                '1-15': [{n:'马丁·路德·金', d:'民权运动领袖', e:'✊'}],
+                '2-12': [{n:'达尔文', d:'进化论奠基人', e:'🔬'},{n:'林肯', d:'美国第16任总统', e:'🎩'}],
+                '2-14': [{n:'瓦伦丁', d:'情人节起源', e:'❤️'}],
+                '3-14': [{n:'爱因斯坦', d:'相对论之父', e:'⚛️'},{n:'斯蒂芬·霍金', d:'理论物理学家', e:'🌌'}],
+                '3-21': [{n:'巴赫', d:'音乐之父', e:'🎼'}],
+                '4-1': [{n:'赵薇', d:'中国演员、导演', e:'🎬'}],
+                '4-12': [{n:'加加林', d:'首位进入太空的人', e:'🚀'}],
+                '4-15': [{n:'达·芬奇', d:'文艺复兴巨匠', e:'🎨'}],
+                '4-22': [{n:'列宁', d:'苏联缔造者', e:'📖'}],
+                '4-26': [{n:'贝多芬', d:'音乐巨匠', e:'🎹'}],
+                '5-2': [{n:'碧昂丝', d:'美国歌手', e:'🎤'}],
+                '5-5': [{n:'马克思', d:'共产主义之父', e:'📕'}],
+                '5-14': [{n:'马克·扎克伯格', d:'Facebook创始人', e:'💻'}],
+                '6-1': [{n:'玛丽莲·梦露', d:'好莱坞传奇女星', e:'🌟'}],
+                '6-7': [{n:'普希金', d:'俄国文学之父', e:'✍️'}],
+                '6-9': [{n:'Johnny Depp', d:'好莱坞影星', e:'🎬'}],
+                '6-12': [{n:'安南', d:'前联合国秘书长', e:'🌍'}],
+                '7-4': [{n:'卡尔文·柯立芝', d:'美国第30任总统', e:'🇺🇸'}],
+                '7-6': [{n:'周杰伦', d:'华语流行天王', e:'🎵'}],
+                '7-20': [{n:'巩俐', d:'国际影星', e:'🎬'}],
+                '8-8': [{n:'罗杰·费德勒', d:'网球天王', e:'🎾'}],
+                '8-30': [{n:'沃伦·巴菲特', d:'股神', e:'💰'}],
+                '9-7': [{n:'周杰伦', d:'华语流行天王', e:'🎵'}],
+                '9-11': [{n:'大岛渚', d:'日本电影导演', e:'🎬'}],
+                '9-28': [{n:'孔子', d:'中国伟大思想家', e:'📜'}],
+                '10-1': [{n:'周杰伦', d:'华语流行天王', e:'🎵'}],
+                '10-9': [{n:'约翰·列侬', d:'披头士成员', e:'🎸'}],
+                '10-14': [{n:'德怀特·艾森豪威尔', d:'美国第34任总统', e:'🇺🇸'}],
+                '10-28': [{n:'比尔·盖茨', d:'微软创始人', e:'💻'}],
+                '11-11': [{n:'莱昂纳多·迪卡普里奥', d:'好莱坞影星', e:'🎬'},{n:'费雯·丽', d:'《乱世佳人》主演', e:'🌟'}],
+                '11-14': [{n:'克劳德·莫奈', d:'印象派画家', e:'🎨'}],
+                '11-19': [{n:'林肯', d:'葛底斯堡演说', e:'📜'}],
+                '12-5': [{n:'沃尔特·迪士尼', d:'迪士尼创始人', e:'🏰'}],
+                '12-8': [{n:'金正恩', d:'朝鲜领导人', e:'🇰🇵'}],
+                '12-25': [{n:'牛顿', d:'物理学之父', e:'🍎'},{n:'穆罕默德·阿里', d:'拳王', e:'🥊'}],
+                '12-28': [{n:'斯坦·李', d:'漫威之父', e:'🦸'}]
+            };
+            return famousData[key] || [];
+        }
+
+        function renderFamous(el, list, month, day) {
+            if (!list || list.length === 0) {
+                el.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">' +
+                    '🌟 ' + month + '月' + day + '日出生<br><br>你是独一无二的存在！</div>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < list.length; i++) {
+                html += '<div class="famous-item">' +
+                    '<span class="famous-emoji">' + (list[i].e || '🌟') + '</span>' +
+                    '<span class="famous-name">' + list[i].n + '</span>' +
+                    '<span class="famous-desc">' + (list[i].d || '') + '</span>' +
+                    '</div>';
+            }
+            el.innerHTML = html;
+        }
+
+        // ========== 纪念日管理 ==========
+        var anniversaries = [];
+
+        function loadAnniversaries() {
+            try {
+                var saved = localStorage.getItem('age-calculator-anniversaries');
+                if (saved) anniversaries = JSON.parse(saved);
+            } catch(e) {
+                anniversaries = [];
+            }
+        }
+
+        function saveAnniversaries() {
+            try {
+                localStorage.setItem('age-calculator-anniversaries', JSON.stringify(anniversaries));
+            } catch(e) {}
+        }
+
+        function addAnniversary() {
+            var nameEl = document.getElementById('anniversaryName');
+            var dateEl = document.getElementById('anniversaryDate');
+            var name = nameEl.value.trim();
+            var date = dateEl.value;
+            if (!name) { alert('请输入纪念日名称'); return; }
+            if (!date) { alert('请选择纪念日日期'); return; }
+            anniversaries.push({ name: name, date: date, id: Date.now() });
+            saveAnniversaries();
+            nameEl.value = '';
+            dateEl.value = '';
+            renderAnniversaries();
+        }
+
+        function deleteAnniversary(id) {
+            var newArr = [];
+            for (var i = 0; i < anniversaries.length; i++) {
+                if (anniversaries[i].id !== id) newArr.push(anniversaries[i]);
+            }
+            anniversaries = newArr;
+            saveAnniversaries();
+            renderAnniversaries();
+        }
+
+        function renderAnniversaries() {
+            var el = document.getElementById('anniversaryList');
+            if (anniversaries.length === 0) {
+                el.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:16px;">还没有添加纪念日</div>';
+                return;
+            }
+            var now = new Date();
+            var html = '';
+            for (var i = 0; i < anniversaries.length; i++) {
+                var item = anniversaries[i];
+                var parts = item.date.split('-');
+                var m = parseInt(parts[1]);
+                var d = parseInt(parts[2]);
+                // 计算下一次纪念日
+                var nextDate = new Date(now.getFullYear(), m - 1, d);
+                if (nextDate.getTime() <= now.getTime()) {
+                    nextDate = new Date(now.getFullYear() + 1, m - 1, d);
+                }
+                var diffDays = Math.ceil((nextDate.getTime() - now.getTime()) / (24 * 3600 * 1000));
+                // 计算已经过了多少年
+                var firstDate = new Date(parseInt(parts[0]), m - 1, d);
+                var years = now.getFullYear() - firstDate.getFullYear();
+                if (now.getMonth() < m - 1 || (now.getMonth() === m - 1 && now.getDate() < d)) {
+                    years--;
+                }
+                html += '<div class="anniversary-item">' +
+                    '<div class="anni-info">' +
+                    '<div class="anni-name">' + item.name + '</div>' +
+                    '<div class="anni-date">' + item.date + '（已' + Math.max(0, years) + '年）</div>' +
+                    '</div>' +
+                    '<div class="anni-countdown">' + (diffDays === 0 ? '🎉 今天！' : '还有' + diffDays + '天') + '</div>' +
+                    '<button class="anni-delete" onclick="deleteAnniversary(' + item.id + ')" title="删除">✕</button>' +
+                    '</div>';
+            }
+            el.innerHTML = html;
         }
 
         // ========== Theme Toggle ==========
