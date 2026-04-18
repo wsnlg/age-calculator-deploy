@@ -948,11 +948,70 @@
         }
 
         function setDefaultDate() {
-            document.getElementById('yearSelect').value = '' + (new Date().getFullYear() - 1);
-            populateMonths();
-            document.getElementById('monthSelect').value = '1';
-            populateDays();
-            document.getElementById('daySelect').value = '1';
+            // 尝试从本地缓存恢复
+            var saved = null;
+            try { saved = localStorage.getItem('age-calculator-date'); } catch(e) {}
+            if (saved) {
+                try {
+                    var data = JSON.parse(saved);
+                    // 恢复历法类型
+                    if (data.calendarType === 'solar' || data.calendarType === 'lunar') {
+                        calendarType = data.calendarType;
+                        document.getElementById('btnSolar').classList.toggle('active', calendarType === 'solar');
+                        document.getElementById('btnLunar').classList.toggle('active', calendarType === 'lunar');
+                    }
+                    // 恢复年
+                    if (data.year) {
+                        document.getElementById('yearSelect').value = '' + data.year;
+                    } else {
+                        document.getElementById('yearSelect').value = '' + (new Date().getFullYear() - 1);
+                    }
+                    populateMonths();
+                    // 恢复月
+                    if (data.month && document.querySelector('#monthSelect option[value="' + data.month + '"]')) {
+                        document.getElementById('monthSelect').value = data.month;
+                    }
+                    populateDays();
+                    // 恢复日
+                    if (data.day && document.querySelector('#daySelect option[value="' + data.day + '"]')) {
+                        document.getElementById('daySelect').value = data.day;
+                    }
+                    // 恢复时分
+                    if (data.hour !== undefined && data.hour !== null) {
+                        document.getElementById('hourSelect').value = '' + data.hour;
+                    }
+                    if (data.minute !== undefined && data.minute !== null) {
+                        document.getElementById('minuteSelect').value = '' + data.minute;
+                    }
+                } catch(e) {
+                    // 缓存数据异常，使用默认值
+                    document.getElementById('yearSelect').value = '' + (new Date().getFullYear() - 1);
+                    populateMonths();
+                    document.getElementById('monthSelect').value = '1';
+                    populateDays();
+                    document.getElementById('daySelect').value = '1';
+                }
+            } else {
+                document.getElementById('yearSelect').value = '' + (new Date().getFullYear() - 1);
+                populateMonths();
+                document.getElementById('monthSelect').value = '1';
+                populateDays();
+                document.getElementById('daySelect').value = '1';
+            }
+        }
+
+        function saveDateToCache() {
+            try {
+                var data = {
+                    calendarType: calendarType,
+                    year: document.getElementById('yearSelect').value,
+                    month: document.getElementById('monthSelect').value,
+                    day: document.getElementById('daySelect').value,
+                    hour: document.getElementById('hourSelect').value,
+                    minute: document.getElementById('minuteSelect').value
+                };
+                localStorage.setItem('age-calculator-date', JSON.stringify(data));
+            } catch(e) {}
         }
 
         // ========== Calendar Switch ==========
@@ -960,10 +1019,18 @@
             calendarType = type;
             document.getElementById('btnSolar').classList.toggle('active', type === 'solar');
             document.getElementById('btnLunar').classList.toggle('active', type === 'lunar');
+            var prevMonth = document.getElementById('monthSelect').value;
+            var prevDay = document.getElementById('daySelect').value;
             populateMonths();
-            document.getElementById('monthSelect').value = '1';
+            // Try to keep previous month
+            if (document.querySelector('#monthSelect option[value="' + prevMonth + '"]')) {
+                document.getElementById('monthSelect').value = prevMonth;
+            }
             populateDays();
-            document.getElementById('daySelect').value = '1';
+            // Try to keep previous day
+            if (document.querySelector('#daySelect option[value="' + prevDay + '"]')) {
+                document.getElementById('daySelect').value = prevDay;
+            }
             onDateChange();
         }
 
@@ -1116,6 +1183,7 @@
             } catch (e) {
                 console.error('Date conversion error:', e);
             }
+            saveDateToCache();
         }
 
         function updateDualCalendar(solarStr, lunarStr) {
