@@ -250,16 +250,13 @@
         .date-field select,
         .date-field input {
             width: 100%;
-            padding: 10px 8px;
+            padding: 10px 12px;
             background: var(--bg-primary);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             color: var(--text-primary);
-            font-size: 0.9rem;
+            font-size: 1rem;
             transition: var(--transition);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .date-field select:focus,
@@ -652,18 +649,11 @@
             }
 
             .date-input-group {
-                gap: 6px;
+                gap: 8px;
             }
 
             .date-field {
-                min-width: 0;
-                flex: 1;
-            }
-
-            .date-field select,
-            .date-field input {
-                padding: 8px 4px;
-                font-size: 0.85rem;
+                min-width: 70px;
             }
 
             .total-stats {
@@ -921,7 +911,7 @@
             for (var y = currentYear; y >= 1900; y--) {
                 var opt = document.createElement('option');
                 opt.value = y;
-                opt.textContent = y + '';
+                opt.textContent = y + '年';
                 sel.appendChild(opt);
             }
         }
