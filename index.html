@@ -649,11 +649,22 @@
             }
 
             .date-input-group {
-                gap: 8px;
+                gap: 6px;
+                flex-wrap: wrap;
             }
 
             .date-field {
                 min-width: 70px;
+            }
+
+            .date-field.time-field {
+                min-width: 60px;
+            }
+
+            .date-field select,
+            .date-field input {
+                padding: 8px 4px;
+                font-size: 0.85rem;
             }
 
             .total-stats {
@@ -749,13 +760,13 @@
                     <label>日</label>
                     <select id="daySelect" onchange="onDateChange()"></select>
                 </div>
-                <div class="date-field">
+                <div class="date-field time-field">
                     <label>时（可选）</label>
                     <select id="hourSelect" onchange="onDateChange()">
                         <option value="-1">--</option>
                     </select>
                 </div>
-                <div class="date-field">
+                <div class="date-field time-field">
                     <label>分（可选）</label>
                     <select id="minuteSelect" onchange="onDateChange()">
                         <option value="-1">--</option>
