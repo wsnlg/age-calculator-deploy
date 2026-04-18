@@ -594,19 +594,22 @@
         }
 
         .birthday-note {
-            grid-column: 1 / -1;
             text-align: center;
             color: var(--text-muted);
             font-size: 0.75rem;
-            padding: 4px 0;
+            padding: 0 0 10px;
         }
 
         .birthday-item {
-            padding: 20px;
+            padding: 20px 16px;
             background: var(--bg-primary);
             border-radius: var(--radius-sm);
             text-align: center;
             transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .birthday-item:hover {
@@ -1182,6 +1185,7 @@
         <!-- Birthday Countdown Card -->
         <div class="card hidden" id="birthdayCard">
             <div class="card-title"><span class="icon">🎂</span> 生日倒计时</div>
+            <div class="birthday-note">💡 阳历与农历倒计时天数不同是正常的，农历每年对应的阳历日期会变化</div>
             <div class="birthday-countdown" id="birthdayCountdown"></div>
         </div>
 
@@ -1783,7 +1787,6 @@
                     '<div class="date-info">' + solarDateInfo + '</div>' +
                     solarExtraHtml +
                 '</div>' +
-                '<div class="birthday-note">💡 阳历与农历倒计时天数不同是正常的，农历每年对应的阳历日期会变化</div>' +
                 '<div class="' + lunarClass + '">' +
                     '<div class="type">🌙 农历生日</div>' +
                     '<div class="days">' + lunarDaysHtml + '</div>' +
