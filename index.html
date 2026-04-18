@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.9/lunar.js"></script>
     <style>
         /* ========== CSS Variables & Theme ========== */
+        /* 默认暗色主题（无 data-theme 时） */
         :root {
             --bg-primary: #0f0f1a;
             --bg-secondary: #1a1a2e;
@@ -31,6 +32,31 @@
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* 系统亮色模式自动适配 */
+        @media (prefers-color-scheme: light) {
+            :root:not([data-theme="dark"]):not([data-theme="light"]) {
+                --bg-primary: #f0f2f5;
+                --bg-secondary: #ffffff;
+                --bg-card: #ffffff;
+                --bg-card-hover: #f5f5f5;
+                --text-primary: #1a1a2e;
+                --text-secondary: #555570;
+                --text-muted: #8888a0;
+                --accent: #e94560;
+                --accent-glow: rgba(233, 69, 96, 0.15);
+                --accent-secondary: #0f3460;
+                --border: #e0e0e8;
+                --success: #00b386;
+                --warning: #f0a500;
+                --info: #2196f3;
+                --gradient-1: linear-gradient(135deg, #e94560, #c23152);
+                --gradient-2: linear-gradient(135deg, #4fc3f7, #2196f3);
+                --gradient-3: linear-gradient(135deg, #f0f2f5, #e8eaf0);
+                --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            }
+        }
+
+        /* 手动切换亮色 */
         [data-theme="light"] {
             --bg-primary: #f0f2f5;
             --bg-secondary: #ffffff;
@@ -50,6 +76,28 @@
             --gradient-2: linear-gradient(135deg, #4fc3f7, #2196f3);
             --gradient-3: linear-gradient(135deg, #f0f2f5, #e8eaf0);
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 手动切换暗色（覆盖系统亮色） */
+        [data-theme="dark"] {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-card-hover: #1a2745;
+            --text-primary: #e8e8f0;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6a6a80;
+            --accent: #e94560;
+            --accent-glow: rgba(233, 69, 96, 0.3);
+            --accent-secondary: #0f3460;
+            --border: #2a2a40;
+            --success: #00d2a0;
+            --warning: #ffc107;
+            --info: #4fc3f7;
+            --gradient-1: linear-gradient(135deg, #e94560, #c23152);
+            --gradient-2: linear-gradient(135deg, #0f3460, #1a4a8a);
+            --gradient-3: linear-gradient(135deg, #16213e, #1a1a2e);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         /* ========== Reset & Base ========== */
@@ -202,13 +250,16 @@
         .date-field select,
         .date-field input {
             width: 100%;
-            padding: 10px 12px;
+            padding: 10px 8px;
             background: var(--bg-primary);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             color: var(--text-primary);
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: var(--transition);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .date-field select:focus,
@@ -601,11 +652,18 @@
             }
 
             .date-input-group {
-                gap: 8px;
+                gap: 6px;
             }
 
             .date-field {
-                min-width: 60px;
+                min-width: 0;
+                flex: 1;
+            }
+
+            .date-field select,
+            .date-field input {
+                padding: 8px 4px;
+                font-size: 0.85rem;
             }
 
             .total-stats {
@@ -863,7 +921,7 @@
             for (var y = currentYear; y >= 1900; y--) {
                 var opt = document.createElement('option');
                 opt.value = y;
-                opt.textContent = y + '年';
+                opt.textContent = y + '';
                 sel.appendChild(opt);
             }
         }
@@ -889,7 +947,7 @@
         }
 
         function setDefaultDate() {
-            document.getElementById('yearSelect').value = '1995';
+            document.getElementById('yearSelect').value = '' + (new Date().getFullYear() - 1);
             populateMonths();
             document.getElementById('monthSelect').value = '1';
             populateDays();
@@ -1369,17 +1427,72 @@
         }
 
         // ========== Theme Toggle ==========
-        function toggleTheme() {
+        var userTheme = null; // null=跟随系统, 'light'=亮色, 'dark'=暗色
+
+        function getSystemTheme() {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                return 'light';
+            }
+            return 'dark';
+        }
+
+        function applyTheme(theme) {
             var body = document.body;
             var btn = document.querySelector('.theme-toggle');
-            if (body.getAttribute('data-theme') === 'light') {
-                body.removeAttribute('data-theme');
-                btn.textContent = '🌙';
-            } else {
+            if (theme === 'light') {
                 body.setAttribute('data-theme', 'light');
                 btn.textContent = '☀️';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.textContent = '🌙';
             }
         }
+
+        function toggleTheme() {
+            // 循环切换: 跟随系统 → 亮色 → 暗色 → 跟随系统
+            if (userTheme === null) {
+                userTheme = 'light';
+                applyTheme('light');
+            } else if (userTheme === 'light') {
+                userTheme = 'dark';
+                applyTheme('dark');
+            } else {
+                userTheme = null;
+                applyTheme(getSystemTheme());
+            }
+            try { localStorage.setItem('age-calculator-theme', userTheme); } catch(e) {}
+        }
+
+        // 初始化主题
+        (function() {
+            // 读取用户偏好
+            var saved = null;
+            try { saved = localStorage.getItem('age-calculator-theme'); } catch(e) {}
+            if (saved === 'light' || saved === 'dark') {
+                userTheme = saved;
+            } else {
+                userTheme = null;
+            }
+            applyTheme(userTheme || getSystemTheme());
+
+            // 监听系统主题变化
+            if (window.matchMedia) {
+                var mq = window.matchMedia('(prefers-color-scheme: light)');
+                if (mq.addListener) {
+                    mq.addListener(function(e) {
+                        if (userTheme === null) {
+                            applyTheme(e.matches ? 'light' : 'dark');
+                        }
+                    });
+                } else if (mq.addEventListener) {
+                    mq.addEventListener('change', function(e) {
+                        if (userTheme === null) {
+                            applyTheme(e.matches ? 'light' : 'dark');
+                        }
+                    });
+                }
+            }
+        })();
 
         // ========== Page Visibility API ==========
         document.addEventListener('visibilitychange', function() {
