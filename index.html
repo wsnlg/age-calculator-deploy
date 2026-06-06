@@ -29,7 +29,7 @@
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             --radius: 16px;
             --radius-sm: 10px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
         }
 
         /* 系统亮色模式自动适配 */
@@ -136,7 +136,8 @@
             min-width: 6px;
             border-radius: 2px;
             background: var(--border);
-            transition: all 0.2s;
+            transition: transform 0.2s ease;
+            will-change: transform;
         }
         .week-cell.lived {
             background: var(--accent);
@@ -343,8 +344,16 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
-            transition: var(--transition);
             line-height: 1.6;
+        }
+
+        /* Disable all transitions during theme switch */
+        body.no-transition,
+        body.no-transition *,
+        body.no-transition *::before,
+        body.no-transition *::after {
+            transition: none !important;
+            animation: none !important;
         }
 
         /* ========== Header ========== */
@@ -384,7 +393,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition);
+            transition: var(--transition), transform 0.2s ease;
         }
 
         .theme-toggle:hover {
@@ -448,7 +457,6 @@
             font-size: 0.95rem;
             font-weight: 500;
             cursor: pointer;
-            transition: var(--transition);
         }
 
         .calendar-switch button.active {
@@ -487,7 +495,6 @@
             border-radius: var(--radius-sm);
             color: var(--text-primary);
             font-size: 1rem;
-            transition: var(--transition);
         }
 
         .date-field select:focus,
@@ -605,7 +612,7 @@
             background: var(--bg-primary);
             border-radius: var(--radius-sm);
             text-align: center;
-            transition: var(--transition);
+            transition: var(--transition), transform 0.2s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -771,7 +778,7 @@
             background: var(--bg-primary);
             border-radius: var(--radius-sm);
             text-align: center;
-            transition: var(--transition);
+            transition: var(--transition), transform 0.2s ease;
         }
 
         .life-stat-item:hover {
@@ -899,7 +906,6 @@
 
         .stage-bar div {
             height: 100%;
-            transition: var(--transition);
         }
 
         .stage-labels {
@@ -2618,6 +2624,8 @@
         function applyTheme(theme) {
             var body = document.body;
             var btn = document.querySelector('.theme-toggle');
+            // Disable transitions for instant theme switch
+            body.classList.add('no-transition');
             if (theme === 'light') {
                 body.setAttribute('data-theme', 'light');
                 btn.textContent = '☀️';
@@ -2625,20 +2633,19 @@
                 body.setAttribute('data-theme', 'dark');
                 btn.textContent = '🌙';
             }
+            // Force reflow
+            void body.offsetHeight;
+            // Re-enable transitions
+            body.classList.remove('no-transition');
         }
 
         function toggleTheme() {
-            // 循环切换: 跟随系统 → 亮色 → 暗色 → 跟随系统
-            if (userTheme === null) {
-                userTheme = 'light';
-                applyTheme('light');
-            } else if (userTheme === 'light') {
-                userTheme = 'dark';
-                applyTheme('dark');
-            } else {
-                userTheme = null;
-                applyTheme(getSystemTheme());
-            }
+            // 直接取反当前显示的主题
+            var body = document.body;
+            var current = body.getAttribute('data-theme') || getSystemTheme();
+            var next = current === 'dark' ? 'light' : 'dark';
+            userTheme = next;
+            applyTheme(next);
             try { localStorage.setItem('age-calculator-theme', userTheme); } catch(e) {}
         }
 
