@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>年龄计算器 - Age Calculator</title>
-    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.9/lunar.js"></script>
+    <meta name="description" content="输入出生日期，精确计算年龄、生日倒计时、星座生肖、生命统计与历史名人，支持阳历农历切换。">
+    <script id="lunarScript" src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.9/lunar.js" onerror="window.lunarLoadFailed=true"></script>
     <style>
         /* ========== CSS Variables & Theme ========== */
         /* 默认暗色主题（无 data-theme 时） */
@@ -117,40 +118,6 @@
             line-height: 1.8;
         }
 
-        /* ========== 生命周历 ========== */
-        .week-calendar-desc {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        .week-calendar {
-            display: grid;
-            grid-template-columns: repeat(52, 1fr);
-            gap: 1px;
-            max-width: 100%;
-            overflow-x: auto;
-        }
-        .week-cell {
-            aspect-ratio: 1;
-            min-width: 6px;
-            border-radius: 2px;
-            background: var(--border);
-            transition: transform 0.2s ease;
-            will-change: transform;
-        }
-        .week-cell.lived {
-            background: var(--accent);
-        }
-        .week-cell.current {
-            background: var(--warning);
-            box-shadow: 0 0 4px var(--warning);
-        }
-        .week-cell:hover {
-            transform: scale(2);
-            z-index: 1;
-        }
-
         /* ========== 趣味年龄 ========== */
         .fun-age {
             display: grid;
@@ -195,23 +162,107 @@
             line-height: 1.8;
         }
 
-        /* ========== 历史上的今天 ========== */
-        .history-info {
-            padding: 8px 0;
+        /* ========== 历史上的今天（增强） ========== */
+        .history-info { padding: 4px 0; }
+        .history-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        .history-source { color: var(--info); }
+        .history-timeline { position: relative; padding-left: 20px; }
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: var(--border);
         }
         .history-item {
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border);
-            line-height: 1.6;
+            position: relative;
+            padding: 10px 0 10px 8px;
+            line-height: 1.55;
             color: var(--text-secondary);
         }
-        .history-item:last-child {
-            border-bottom: none;
+        .history-item::before {
+            content: '';
+            position: absolute;
+            left: -18px;
+            top: 16px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--bg-card);
         }
         .history-item .history-year {
             color: var(--accent);
             font-weight: 700;
-            margin-right: 8px;
+            margin-right: 6px;
+            font-size: 0.9rem;
+        }
+        .history-cat {
+            display: inline-block;
+            font-size: 0.65rem;
+            padding: 1px 6px;
+            border-radius: 4px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .history-cat.china { background: rgba(233,69,96,0.15); color: var(--accent); }
+        .history-cat.world { background: rgba(79,195,247,0.15); color: var(--info); }
+        .history-cat.science { background: rgba(0,210,160,0.15); color: var(--success); }
+        .history-cat.culture { background: rgba(255,193,7,0.15); color: var(--warning); }
+        .history-cat.war { background: rgba(156,39,176,0.15); color: #ce93d8; }
+        .history-cat.tech { background: rgba(33,150,243,0.15); color: #64b5f6; }
+
+        /* ========== 数字动画 ========== */
+        @keyframes numTick {
+            0% { transform: translateY(0); opacity: 1; }
+            40% { transform: translateY(-6px); opacity: 0.3; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .num-tick { display: inline-block; animation: numTick 0.35s ease; }
+        .sub-time .sec-digit { color: var(--accent); font-weight: 700; }
+
+        /* ========== 二维码 ========== */
+        .qr-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15,15,26,0.7);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .qr-modal.active { opacity: 1; pointer-events: auto; }
+        .qr-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            max-width: 90vw;
+        }
+        .qr-box img { width: 160px; height: 160px; border-radius: 8px; margin: 12px 0; }
+        .qr-close {
+            margin-top: 12px;
+            padding: 8px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--gradient-1);
+            color: #fff;
+            cursor: pointer;
         }
 
         /* ========== 同日生名人 ========== */
@@ -379,9 +430,10 @@
         }
 
         .theme-toggle {
-            position: absolute;
+            position: fixed;
             top: 20px;
             right: 20px;
+            z-index: 9990;
             background: var(--bg-card);
             border: 1px solid var(--border);
             color: var(--text-primary);
@@ -393,6 +445,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: var(--shadow);
             transition: var(--transition), transform 0.2s ease;
         }
 
@@ -649,6 +702,7 @@
 
         .birthday-today {
             animation: celebrate 1s ease-in-out infinite alternate;
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
         @keyframes celebrate {
@@ -1008,8 +1062,13 @@
                 gap: 16px;
             }
 
-            .birthday-countdown {
+            .birthday-countdown,
+            .birth-info-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .bazi-pillars {
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .zodiac-sx-layout {
@@ -1044,9 +1103,6 @@
             .fun-age {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 8px;
-            }
-            .week-cell {
-                min-width: 4px;
             }
             .anniversary-add {
                 flex-direction: column;
@@ -1090,6 +1146,241 @@
             100% { transform: scale(1); }
         }
 
+        /* ========== Action Bar ========== */
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent);
+            background: var(--bg-card-hover);
+        }
+
+        .action-btn.primary {
+            background: var(--gradient-1);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .save-hint {
+            width: 100%;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* ========== Birth Info ========== */
+        .birth-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .birth-info-item {
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            text-align: center;
+        }
+
+        .birth-info-item .bi-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .birth-info-item .bi-value {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--info);
+        }
+
+        .birth-info-item .bi-sub {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ========== BaZi ========== */
+        .bazi-pillars {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .bazi-pillar {
+            padding: 14px 8px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            text-align: center;
+        }
+
+        .bazi-pillar .bp-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .bazi-pillar .bp-ganzhi {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 2px;
+        }
+
+        .bazi-pillar .bp-nayin {
+            font-size: 0.72rem;
+            color: var(--warning);
+            margin-top: 6px;
+        }
+
+        .bazi-pillar.missing .bp-ganzhi {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            letter-spacing: 0;
+        }
+
+        .bazi-summary {
+            text-align: center;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            padding: 12px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+        }
+
+        /* ========== Milestones ========== */
+        .milestone-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .milestone-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--border);
+        }
+
+        .milestone-item.done { border-left-color: var(--success); opacity: 0.9; }
+        .milestone-item.soon { border-left-color: var(--accent); background: rgba(233, 69, 96, 0.08); }
+        .milestone-item.upcoming { border-left-color: var(--warning); }
+
+        .ms-icon { font-size: 1.4rem; flex-shrink: 0; }
+        .ms-body { flex: 1; min-width: 0; }
+        .ms-name { font-weight: 600; font-size: 0.92rem; }
+        .ms-date { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+        .ms-status { font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+        .ms-status.done { color: var(--success); }
+        .ms-status.soon { color: var(--accent); }
+        .ms-status.upcoming { color: var(--warning); }
+
+        /* ========== Celebration ========== */
+        .celebration-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 15, 26, 0.75);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .celebration-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .celebration-box {
+            text-align: center;
+            padding: 36px 44px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            box-shadow: 0 0 60px var(--accent-glow);
+            animation: celebratePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 90vw;
+        }
+
+        .celebration-box .cake { font-size: 3.5rem; margin-bottom: 10px; }
+        .celebration-box h2 {
+            font-size: 1.6rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        .celebration-box p { color: var(--text-secondary); margin-bottom: 18px; }
+        .celebration-close {
+            padding: 10px 28px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--gradient-1);
+            color: #fff;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .confetti-piece {
+            position: fixed;
+            top: -10px;
+            width: 10px;
+            height: 10px;
+            z-index: 10000;
+            pointer-events: none;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes celebratePop {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes confettiFall {
+            to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Date error */
+        .date-error {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(233, 69, 96, 0.15);
+            border: 1px solid var(--accent);
+            border-radius: var(--radius-sm);
+            color: var(--accent);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
         /* Hidden utility */
         .hidden {
             display: none !important;
@@ -1097,9 +1388,10 @@
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换主题" aria-label="切换主题">🌙</button>
+
     <!-- Header -->
     <div class="header">
-        <button class="theme-toggle" onclick="toggleTheme()" title="切换主题">🌙</button>
         <h1>🕐 年龄计算器</h1>
         <p>输入你的出生日期，精确计算你活过的每一秒</p>
     </div>
@@ -1119,7 +1411,7 @@
             <div class="date-input-group">
                 <div class="date-field">
                     <label>年</label>
-                    <select id="yearSelect" onchange="onDateChange()"></select>
+                    <select id="yearSelect" onchange="onYearChange()"></select>
                 </div>
                 <div class="date-field">
                     <label>月</label>
@@ -1143,6 +1435,8 @@
                 </div>
             </div>
 
+            <div class="date-error hidden" id="dateError"></div>
+
             <!-- Dual Calendar Display -->
             <div class="dual-calendar" id="dualCalendar">
                 <div class="dual-calendar-item">
@@ -1154,11 +1448,18 @@
                     <div class="value" id="lunarDisplay">请选择日期</div>
                 </div>
             </div>
+
+            <div class="action-bar">
+                <button class="action-btn primary" onclick="copyShareLink()">🔗 分享链接</button>
+                <button class="action-btn" onclick="copyAgeSummary()">📋 复制摘要</button>
+                <button class="action-btn" onclick="showQrModal()">📱 二维码</button>
+                <span class="save-hint" id="saveHint">生日自动保存到本机，下次打开自动加载</span>
+            </div>
         </div>
 
         <!-- Core Display Card -->
         <div class="card hidden" id="coreCard">
-            <div class="card-title"><span class="icon">⏱️</span> 你已经活了多久</div>
+            <div class="card-title"><span class="icon">⏱️</span> 人生时光</div>
             <div class="core-display">
                 <div class="main-time" id="mainTime"></div>
                 <div class="sub-time" id="subTime"></div>
@@ -1181,6 +1482,25 @@
         <div class="zodiac-sx-col" id="shengxiaoInfo"></div>
     </div>
 </div>
+
+        <!-- 出生信息卡片 -->
+        <div class="card hidden" id="birthInfoCard">
+            <div class="card-title"><span class="icon">🕰️</span> 出生时辰 &amp; 节日</div>
+            <div class="birth-info-grid" id="birthInfoGrid"></div>
+        </div>
+
+        <!-- 干支八字卡片 -->
+        <div class="card hidden" id="baziCard">
+            <div class="card-title"><span class="icon">☯️</span> 干支八字 &amp; 纳音</div>
+            <div class="bazi-pillars" id="baziPillars"></div>
+            <div class="bazi-summary" id="baziSummary"></div>
+        </div>
+
+        <!-- 人生里程碑卡片 -->
+        <div class="card hidden" id="milestoneCard">
+            <div class="card-title"><span class="icon">🏁</span> 人生里程碑</div>
+            <div class="milestone-list" id="milestoneList"></div>
+        </div>
 
         <!-- 节气季节卡片 -->
         <div class="card hidden" id="seasonCard">
@@ -1240,13 +1560,6 @@
             <div class="life-stats" id="lifeStats"></div>
         </div>
 
-        <!-- 生命周历卡片 -->
-        <div class="card hidden" id="weekCalendarCard">
-            <div class="card-title"><span class="icon">🗓️</span> 生命周历</div>
-            <div class="week-calendar-desc">每格代表一周，已度过的已着色（寿命与上方生命进度一致）</div>
-            <div class="week-calendar" id="weekCalendar"></div>
-        </div>
-
         <!-- 趣味年龄换算卡片 -->
         <div class="card hidden" id="funAgeCard">
             <div class="card-title"><span class="icon">🐾</span> 趣味年龄换算</div>
@@ -1278,6 +1591,26 @@
             </div>
         </div>
 
+    <!-- 分享二维码 -->
+    <div class="qr-modal" id="qrModal" onclick="hideQrModal(event)">
+        <div class="qr-box" onclick="event.stopPropagation()">
+            <div>扫码打开我的年龄计算器</div>
+            <img id="qrImage" src="" alt="QR">
+            <div style="font-size:0.75rem;color:var(--text-muted)">用手机扫描二维码分享</div>
+            <button class="qr-close" onclick="hideQrModal()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 生日庆祝 -->
+    <div class="celebration-overlay" id="celebrationOverlay" onclick="hideCelebration(event)">
+        <div class="celebration-box" onclick="event.stopPropagation()">
+            <div class="cake">🎂</div>
+            <h2 id="celebrationTitle">生日快乐！</h2>
+            <p id="celebrationMsg">愿你每一天都充满阳光与欢笑</p>
+            <button class="celebration-close" onclick="hideCelebration()">收下祝福 ✨</button>
+        </div>
+    </div>
+
         <footer class="site-footer">
             <span class="footer-brand">🕐 年龄计算器</span>
             <span class="footer-url">age.corevibe.cn</span>
@@ -1285,9 +1618,6 @@
     </div>
 
     <script>
-        // ========== WeChat UA Detection ==========
-        var isWeChat = /MicroMessenger/i.test(navigator.userAgent);
-
         // ========== Polyfill: String.prototype.endsWith ==========
         if (typeof String.prototype.endsWith !== 'function') {
             String.prototype.endsWith = function(search, this_len) {
@@ -1335,10 +1665,145 @@
         var birthMinute = -1;
         var updateTimer = null;
         var prevSeconds = -1;
+        var lunarLibAvailable = false;
+        var resultCardIds = ['coreCard', 'weekdayCard', 'zodiacShengxiaoCard', 'birthInfoCard', 'baziCard', 'milestoneCard', 'seasonCard', 'birthdayCard', 'progressCard', 'lifeStatsCard', 'funAgeCard', 'historyCard', 'famousCard', 'anniversaryCard'];
+
+        // ========== Lunar Helpers ==========
+        function toLunarMonthNumber(monthVal) {
+            var isLeap = String(monthVal).indexOf('_leap') >= 0;
+            var month = parseInt(monthVal, 10);
+            return isLeap ? -month : month;
+        }
+
+        function createLunarFromSelected(lunarYear, monthVal, day) {
+            return Lunar.fromYmd(lunarYear, toLunarMonthNumber(monthVal), day);
+        }
+
+        function getCurrentLunarYear() {
+            return Solar.fromDate(new Date()).getLunar().getYear();
+        }
+
+        function getLeapMonthForLunarYear(lunarYear) {
+            try {
+                if (typeof LunarYear !== 'undefined') {
+                    return LunarYear.fromYear(lunarYear).getLeapMonth();
+                }
+                return Lunar.fromYmd(lunarYear, 1, 1).getYearLeapMonth();
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function getBirthSolarObj() {
+            var y = birthSolarDate.getFullYear();
+            var m = birthSolarDate.getMonth() + 1;
+            var d = birthSolarDate.getDate();
+            var h = birthHour >= 0 ? birthHour : 0;
+            var min = birthMinute >= 0 ? birthMinute : 0;
+            return Solar.fromYmdHms(y, m, d, h, min, 0);
+        }
+
+        function getShiChenName(hour) {
+            var names = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+            return names[Math.floor(((hour + 1) % 24) / 2)] + '时';
+        }
+
+        function getShiChenRange(hour) {
+            var ranges = ['23:00-01:00', '01:00-03:00', '03:00-05:00', '05:00-07:00', '07:00-09:00', '09:00-11:00',
+                '11:00-13:00', '13:00-15:00', '15:00-17:00', '17:00-19:00', '19:00-21:00', '21:00-23:00'];
+            return ranges[Math.floor(((hour + 1) % 24) / 2)];
+        }
+
+        // ========== Share ==========
+        function buildShareUrl() {
+            var params = new URLSearchParams();
+            params.set('cal', calendarType);
+            params.set('y', document.getElementById('yearSelect').value);
+            params.set('m', document.getElementById('monthSelect').value);
+            params.set('d', document.getElementById('daySelect').value);
+            params.set('h', document.getElementById('hourSelect').value);
+            params.set('min', document.getElementById('minuteSelect').value);
+            return window.location.href.split('?')[0].split('#')[0] + '?' + params.toString();
+        }
+
+        function setSaveHint(msg) {
+            var el = document.getElementById('saveHint');
+            if (el) el.textContent = msg;
+        }
+
+        function copyShareLink() {
+            if (!birthSolarDate) { showDateError('请先选择有效的出生日期'); return; }
+            var url = buildShareUrl();
+            copyText(url, '✓ 分享链接已复制');
+        }
+
+        function copyAgeSummary() {
+            if (!birthSolarDate) { showDateError('请先选择有效的出生日期'); return; }
+            var main = document.getElementById('mainTime').textContent || '';
+            var sub = document.getElementById('subTime').textContent || '';
+            var solar = document.getElementById('solarDisplay').textContent || '';
+            var lunar = document.getElementById('lunarDisplay').textContent || '';
+            var text = '🕐 我的年龄\n阳历：' + solar + '\n农历：' + lunar + '\n已活：' + main + sub;
+            copyText(text, '✓ 年龄摘要已复制');
+        }
+
+        function copyText(text, okMsg) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() { setSaveHint(okMsg); })
+                    .catch(function() { fallbackCopy(text, okMsg); });
+            } else {
+                fallbackCopy(text, okMsg);
+            }
+        }
+
+        function fallbackCopy(text, okMsg) {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                setSaveHint(okMsg);
+            } catch (e) {
+                setSaveHint('复制失败，请手动复制');
+            }
+            document.body.removeChild(ta);
+        }
+
+        function loadBirthFromUrl() {
+            var params = new URLSearchParams(window.location.search);
+            if (!params.has('y')) return false;
+            var cal = params.get('cal') || 'solar';
+            if (cal === 'lunar' && !lunarLibAvailable) return false;
+            calendarType = cal;
+            document.getElementById('btnSolar').classList.toggle('active', cal === 'solar');
+            document.getElementById('btnLunar').classList.toggle('active', cal === 'lunar');
+            populateYears();
+            if (params.get('y')) document.getElementById('yearSelect').value = params.get('y');
+            populateMonths();
+            if (params.get('m')) document.getElementById('monthSelect').value = params.get('m');
+            populateDays();
+            if (params.get('d')) document.getElementById('daySelect').value = params.get('d');
+            if (params.get('h')) document.getElementById('hourSelect').value = params.get('h');
+            if (params.get('min')) document.getElementById('minuteSelect').value = params.get('min');
+            return true;
+        }
+
+        function updateShareUrl() {
+            if (!birthSolarDate) return;
+            try { history.replaceState(null, '', buildShareUrl()); } catch (e) {}
+        }
 
         // ========== Initialization ==========
         function init() {
-            populateYears();
+            lunarLibAvailable = !window.lunarLoadFailed && typeof Solar !== 'undefined' && typeof Lunar !== 'undefined';
+            if (!lunarLibAvailable) {
+                document.getElementById('btnLunar').disabled = true;
+                document.getElementById('btnLunar').title = '农历库加载失败，请检查网络后刷新页面';
+            }
+
             populateHours();
             populateMinutes();
             setDefaultDate();
@@ -1349,12 +1814,27 @@
 
         function populateYears() {
             var sel = document.getElementById('yearSelect');
-            var currentYear = new Date().getFullYear();
-            for (var y = currentYear; y >= 1900; y--) {
+            var saved = sel.value;
+            sel.innerHTML = '';
+
+            var endYear;
+            var yearLabelSuffix = '年';
+            if (calendarType === 'solar') {
+                endYear = new Date().getFullYear();
+            } else {
+                endYear = lunarLibAvailable ? getCurrentLunarYear() : new Date().getFullYear();
+                yearLabelSuffix = '年（农历）';
+            }
+
+            for (var y = endYear; y >= 1900; y--) {
                 var opt = document.createElement('option');
                 opt.value = y;
-                opt.textContent = y + '年';
+                opt.textContent = y + yearLabelSuffix;
                 sel.appendChild(opt);
+            }
+
+            if (saved && sel.querySelector('option[value="' + saved + '"]')) {
+                sel.value = saved;
             }
         }
 
@@ -1379,19 +1859,20 @@
         }
 
         function setDefaultDate() {
-            // 尝试从本地缓存恢复
+            if (loadBirthFromUrl()) return;
+
             var saved = null;
             try { saved = localStorage.getItem('age-calculator-date'); } catch(e) {}
             if (saved) {
                 try {
                     var data = JSON.parse(saved);
                     // 恢复历法类型
-                    if (data.calendarType === 'solar' || data.calendarType === 'lunar') {
+                    if (data.calendarType === 'solar' || (data.calendarType === 'lunar' && lunarLibAvailable)) {
                         calendarType = data.calendarType;
                         document.getElementById('btnSolar').classList.toggle('active', calendarType === 'solar');
                         document.getElementById('btnLunar').classList.toggle('active', calendarType === 'lunar');
                     }
-                    // 恢复年
+                    populateYears();
                     if (data.year) {
                         document.getElementById('yearSelect').value = '' + data.year;
                     } else {
@@ -1416,6 +1897,7 @@
                     }
                 } catch(e) {
                     // 缓存数据异常，使用默认值
+                    populateYears();
                     document.getElementById('yearSelect').value = '' + (new Date().getFullYear() - 1);
                     populateMonths();
                     document.getElementById('monthSelect').value = '1';
@@ -1423,6 +1905,7 @@
                     document.getElementById('daySelect').value = '1';
                 }
             } else {
+                populateYears();
                 document.getElementById('yearSelect').value = '' + (new Date().getFullYear() - 1);
                 populateMonths();
                 document.getElementById('monthSelect').value = '1';
@@ -1447,11 +1930,17 @@
 
         // ========== Calendar Switch ==========
         function switchCalendar(type) {
+            if (type === 'lunar' && !lunarLibAvailable) {
+                showDateError('农历库加载失败，请检查网络连接后刷新页面。');
+                return;
+            }
+
             calendarType = type;
             document.getElementById('btnSolar').classList.toggle('active', type === 'solar');
             document.getElementById('btnLunar').classList.toggle('active', type === 'lunar');
             var prevMonth = document.getElementById('monthSelect').value;
             var prevDay = document.getElementById('daySelect').value;
+            populateYears();
             populateMonths();
             // Try to keep previous month
             if (document.querySelector('#monthSelect option[value="' + prevMonth + '"]')) {
@@ -1461,6 +1950,16 @@
             // Try to keep previous day
             if (document.querySelector('#daySelect option[value="' + prevDay + '"]')) {
                 document.getElementById('daySelect').value = prevDay;
+            }
+            hideDateError();
+            onDateChange();
+        }
+
+        function onYearChange() {
+            populateMonths();
+            var daySel = document.getElementById('daySelect');
+            if (daySel.options.length > 0) {
+                daySel.value = daySel.options[0].value;
             }
             onDateChange();
         }
@@ -1477,9 +1976,8 @@
                     sel.appendChild(opt);
                 }
             } else {
-                var year = parseInt(document.getElementById('yearSelect').value);
-                // Get lunar months for this year (including leap months)
-                var months = getLunarMonths(year);
+                var lunarYear = parseInt(document.getElementById('yearSelect').value, 10);
+                var months = getLunarMonths(lunarYear);
                 for (var i = 0; i < months.length; i++) {
                     var mItem = months[i];
                     var opt = document.createElement('option');
@@ -1490,13 +1988,10 @@
             }
         }
 
-        function getLunarMonths(year) {
+        function getLunarMonths(lunarYear) {
             var months = [];
-            // Use lunar-javascript to get leap month info
             try {
-                var solar = Solar.fromYmd(year, 1, 1);
-                var lunar = solar.getLunar();
-                var leapMonth = lunar.getYearLeapMonth();
+                var leapMonth = getLeapMonthForLunarYear(lunarYear);
                 for (var m = 1; m <= 12; m++) {
                     months.push({ value: m + '', label: m + '月', isLeap: false });
                     if (leapMonth === m) {
@@ -1533,16 +2028,11 @@
             }
         }
 
-        function getLunarMaxDay(year, monthVal) {
-            // Default to 30, try to get exact from lunar-javascript
+        function getLunarMaxDay(lunarYear, monthVal) {
             try {
-                var isLeap = monthVal.endsWith('_leap');
-                var month = parseInt(monthVal);
-                // Try to find a valid day by checking from 30 down
                 for (var d = 30; d >= 1; d--) {
                     try {
-                        var lunar = Lunar.fromYmd(year, month, d, isLeap);
-                        lunar.getSolar(); // validate
+                        createLunarFromSelected(lunarYear, monthVal, d).getSolar();
                         return d;
                     } catch (e) {
                         continue;
@@ -1587,14 +2077,14 @@
                         lunar.getYearInChinese() + '年' + lunar.getMonthInChinese() + '月' + lunar.getDayInChinese()
                     );
                 } else {
-                    var isLeap = monthVal.endsWith('_leap');
-                    var month = parseInt(monthVal);
+                    var isLeap = monthVal.indexOf('_leap') >= 0;
+                    var month = parseInt(monthVal, 10);
                     birthLunarYear = year;
                     birthLunarMonth = month;
                     birthLunarDay = day;
                     birthLunarIsLeapMonth = isLeap;
 
-                    var lunar = Lunar.fromYmd(year, month, day, isLeap);
+                    var lunar = createLunarFromSelected(year, monthVal, day);
                     var solar = lunar.getSolar();
 
                     birthSolarDate = new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay(),
@@ -1608,13 +2098,22 @@
                     );
                 }
 
-                // Show result cards
+                var now = new Date();
+                if (birthSolarDate.getTime() > now.getTime()) {
+                    showDateError('出生日期不能晚于当前时间，请重新选择。');
+                    return;
+                }
+
+                hideDateError();
+                updateShareUrl();
                 showResults();
                 startUpdating();
+                saveDateToCache();
+                setSaveHint('✓ 已保存到本机');
             } catch (e) {
                 console.error('Date conversion error:', e);
+                showDateError('日期转换失败，请检查所选日期是否有效。');
             }
-            saveDateToCache();
         }
 
         function updateDualCalendar(solarStr, lunarStr) {
@@ -1624,10 +2123,29 @@
 
         // ========== Show/Hide Results ==========
         function showResults() {
-            var ids = ['coreCard', 'weekdayCard', 'zodiacShengxiaoCard', 'seasonCard', 'birthdayCard', 'progressCard', 'lifeStatsCard', 'weekCalendarCard', 'funAgeCard', 'historyCard', 'famousCard', 'anniversaryCard'];
-            for (var i = 0; i < ids.length; i++) {
-                document.getElementById(ids[i]).classList.remove('hidden');
+            for (var i = 0; i < resultCardIds.length; i++) {
+                document.getElementById(resultCardIds[i]).classList.remove('hidden');
             }
+        }
+
+        function hideResults() {
+            for (var i = 0; i < resultCardIds.length; i++) {
+                document.getElementById(resultCardIds[i]).classList.add('hidden');
+            }
+        }
+
+        function showDateError(msg) {
+            document.getElementById('dateError').textContent = msg;
+            document.getElementById('dateError').classList.remove('hidden');
+            hideResults();
+            if (updateTimer) {
+                clearInterval(updateTimer);
+                updateTimer = null;
+            }
+        }
+
+        function hideDateError() {
+            document.getElementById('dateError').classList.add('hidden');
         }
 
         // ========== Real-time Update ==========
@@ -1666,8 +2184,10 @@
             updateZodiacConstellation();
             updateShengxiao();
             updateWeekday();
-            updateWeekCalendar();
             updateFunAge();
+            updateBirthInfo();
+            updateBazi();
+            updateMilestones(now);
             updateSeason();
             updateHistory();
             updateFamous();
@@ -1681,13 +2201,7 @@
             var years = now.getFullYear() - birthSolarDate.getFullYear();
             var months = now.getMonth() - birthSolarDate.getMonth();
             var days = now.getDate() - birthSolarDate.getDate();
-            var hours = now.getHours() - (birthHour >= 0 ? birthHour : 0);
-            var minutes = now.getMinutes() - (birthMinute >= 0 ? birthMinute : 0);
-            var seconds = now.getSeconds();
 
-            if (seconds < 0) { seconds += 60; minutes--; }
-            if (minutes < 0) { minutes += 60; hours--; }
-            if (hours < 0) { hours += 24; days--; }
             if (days < 0) {
                 var prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
                 days += prevMonth.getDate();
@@ -1695,9 +2209,19 @@
             }
             if (months < 0) { months += 12; years--; }
 
+            // 时分秒取「岁/月/日」之后的剩余时长
+            var anchor = new Date(birthSolarDate.getTime());
+            anchor.setFullYear(anchor.getFullYear() + years);
+            anchor.setMonth(anchor.getMonth() + months);
+            anchor.setDate(anchor.getDate() + days);
+            var rem = Math.max(0, now.getTime() - anchor.getTime());
+            var hours = Math.floor(rem / 3600000);
+            var minutes = Math.floor((rem % 3600000) / 60000);
+            var seconds = Math.floor((rem % 60000) / 1000);
+
             // Main time (years, months, days)
             var mainEl = document.getElementById('mainTime');
-            var newMain = '' + years + '<span class="unit">年</span>' + months + '<span class="unit">月</span>' + days + '<span class="unit">日</span>';
+            var newMain = '' + years + '<span class="unit">岁</span>' + months + '<span class="unit">月</span>' + days + '<span class="unit">日</span>';
             if (mainEl.innerHTML !== newMain) {
                 mainEl.innerHTML = newMain;
             }
@@ -1707,7 +2231,9 @@
             var hStr = hours < 10 ? '0' + hours : hours;
             var mStr = minutes < 10 ? '0' + minutes : minutes;
             var sStr = seconds < 10 ? '0' + seconds : seconds;
-            var newSub = '' + hStr + '<span class="unit">时</span>' + mStr + '<span class="unit">分</span>' + sStr + '<span class="unit">秒</span>';
+            var secClass = prevSeconds !== seconds ? 'sec-digit num-tick' : 'sec-digit';
+            var newSub = '' + hStr + '<span class="unit">时</span>' + mStr + '<span class="unit">分</span>' +
+                '<span class="' + secClass + '">' + sStr + '</span><span class="unit">秒</span>';
 
             if (prevSeconds !== seconds) {
                 subEl.innerHTML = newSub;
@@ -1720,6 +2246,9 @@
             var secEl = totalStatsEl.querySelector('.total-stat:last-child .number');
             if (secEl) {
                 secEl.textContent = totalSeconds.toLocaleString();
+                secEl.classList.remove('num-tick');
+                void secEl.offsetWidth;
+                secEl.classList.add('num-tick');
             } else {
                 updateTotalStats(diff);
             }
@@ -1759,15 +2288,13 @@
         function updateBirthdayCountdown(now) {
             var container = document.getElementById('birthdayCountdown');
 
-            // Solar birthday countdown
+            var solarIsToday = now.getMonth() === birthSolarDate.getMonth() && now.getDate() === birthSolarDate.getDate();
             var solarBirthday = getNextBirthday(now, birthSolarDate.getMonth(), birthSolarDate.getDate());
-            var solarDays = Math.ceil((solarBirthday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-            var solarIsToday = solarDays === 0;
+            var solarDays = solarIsToday ? 0 : Math.ceil((solarBirthday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
-            // Lunar birthday countdown
             var lunarNext = getNextLunarBirthday(now);
-            var lunarDays = Math.ceil((lunarNext.solarDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-            var lunarIsToday = lunarDays === 0;
+            var lunarIsToday = isLunarBirthdayToday(now);
+            var lunarDays = lunarIsToday ? 0 : Math.ceil((lunarNext.solarDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
             // Age info
             var nextAge = solarBirthday.getFullYear() - birthSolarDate.getFullYear();
@@ -1798,25 +2325,50 @@
                     '<div class="days">' + lunarDaysHtml + '</div>' +
                     '<div class="date-info">' + lunarDateInfo + '</div>' +
                 '</div>';
+
+            checkCelebration(solarIsToday, lunarIsToday, nextAge);
         }
 
         function getNextBirthday(now, month, day) {
+            if (now.getMonth() === month && now.getDate() === day) {
+                return new Date(now.getFullYear(), month, day);
+            }
             var next = new Date(now.getFullYear(), month, day);
-            if (next <= now) {
+            if (now.getMonth() > month || (now.getMonth() === month && now.getDate() > day)) {
                 next = new Date(now.getFullYear() + 1, month, day);
             }
             return next;
         }
 
+        function isLunarBirthdayToday(now) {
+            if (!lunarLibAvailable) return false;
+            try {
+                var currentLunarYear = Solar.fromDate(now).getLunar().getYear();
+                var lunarMonth = birthLunarIsLeapMonth ? -birthLunarMonth : birthLunarMonth;
+                var lunar = Lunar.fromYmd(currentLunarYear, lunarMonth, birthLunarDay);
+                var solar = lunar.getSolar();
+                return solar.getYear() === now.getFullYear() &&
+                    solar.getMonth() === now.getMonth() + 1 &&
+                    solar.getDay() === now.getDate();
+            } catch (e) {
+                return false;
+            }
+        }
+
         function getNextLunarBirthday(now) {
-            var currentYear = now.getFullYear();
-            // Search from this year to next 2 years
-            for (var y = currentYear; y <= currentYear + 2; y++) {
+            if (!lunarLibAvailable) {
+                return { solarDate: new Date(now.getFullYear() + 1, 0, 1), lunarStr: '无法计算' };
+            }
+
+            var currentLunarYear = Solar.fromDate(now).getLunar().getYear();
+            var lunarMonth = birthLunarIsLeapMonth ? -birthLunarMonth : birthLunarMonth;
+
+            for (var y = currentLunarYear; y <= currentLunarYear + 2; y++) {
                 try {
-                    var lunar = Lunar.fromYmd(y, birthLunarMonth, birthLunarDay, birthLunarIsLeapMonth);
+                    var lunar = Lunar.fromYmd(y, lunarMonth, birthLunarDay);
                     var solar = lunar.getSolar();
                     var solarDate = new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay());
-                    if (solarDate > now) {
+                    if (solarDate.getTime() > now.getTime()) {
                         return {
                             solarDate: solarDate,
                             lunarStr: lunar.getYearInChinese() + '年' + lunar.getMonthInChinese() + '月' + lunar.getDayInChinese()
@@ -1826,9 +2378,9 @@
                     continue;
                 }
             }
-            // Fallback
+
             return {
-                solarDate: new Date(currentYear + 1, 0, 1),
+                solarDate: new Date(now.getFullYear() + 1, 0, 1),
                 lunarStr: '无法计算'
             };
         }
@@ -1873,6 +2425,7 @@
 
         // ========== 星座卡片 ==========
         function updateZodiacConstellation() {
+            if (!birthSolarDate || !lunarLibAvailable) return;
             var container = document.getElementById('zodiacConstellation');
             var year = birthSolarDate.getFullYear();
             var month = birthSolarDate.getMonth() + 1;
@@ -1918,11 +2471,16 @@
             // 性格解读
             html += '<div class="zs-desc">' + cInfo.desc + '</div>';
 
+            if (eInfo.text) {
+                html += '<div class="zs-desc">' + eInfo.text + '</div>';
+            }
+
             container.innerHTML = html;
         }
 
         // ========== 生肖卡片 ==========
         function updateShengxiao() {
+            if (!birthSolarDate || !lunarLibAvailable) return;
             var container = document.getElementById('shengxiaoInfo');
             var year = birthSolarDate.getFullYear();
             var month = birthSolarDate.getMonth() + 1;
@@ -2050,26 +2608,6 @@
                 '</div>';
         }
 
-        // ========== 生命周历 ==========
-        function updateWeekCalendar() {
-            if (!birthSolarDate) return;
-            var now = new Date();
-            var lifeYears = parseInt(document.getElementById('lifeExpectancy').value) || 75;
-            var totalWeeks = lifeYears * 52;
-            var livedWeeks = Math.floor((now.getTime() - birthSolarDate.getTime()) / (7 * 24 * 3600 * 1000));
-            if (livedWeeks < 0) livedWeeks = 0;
-            if (livedWeeks > totalWeeks) livedWeeks = totalWeeks;
-            var el = document.getElementById('weekCalendar');
-            var html = '';
-            for (var i = 0; i < totalWeeks; i++) {
-                var cls = 'week-cell';
-                if (i < livedWeeks) cls += ' lived';
-                if (i === livedWeeks) cls += ' current';
-                html += '<div class="' + cls + '" title="第' + (i + 1) + '周"></div>';
-            }
-            el.innerHTML = html;
-        }
-
         // ========== 趣味年龄换算 ==========
         function updateFunAge() {
             if (!birthSolarDate) return;
@@ -2098,57 +2636,156 @@
             else if (month >= 6 && month <= 8) seasonIndex = 1;
             else if (month >= 9 && month <= 11) seasonIndex = 2;
             else seasonIndex = 3;
-            // 24节气近似计算
-            var solarTerms = [
-                {name: '小寒', m:1, d:6}, {name: '大寒', m:1, d:20},
-                {name: '立春', m:2, d:4}, {name: '雨水', m:2, d:19},
-                {name: '惊蛰', m:3, d:6}, {name: '春分', m:3, d:21},
-                {name: '清明', m:4, d:5}, {name: '谷雨', m:4, d:20},
-                {name: '立夏', m:5, d:6}, {name: '小满', m:5, d:21},
-                {name: '芒种', m:6, d:6}, {name: '夏至', m:6, d:21},
-                {name: '小暑', m:7, d:7}, {name: '大暑', m:7, d:23},
-                {name: '立秋', m:8, d:7}, {name: '处暑', m:8, d:23},
-                {name: '白露', m:9, d:8}, {name: '秋分', m:9, d:23},
-                {name: '寒露', m:10, d:8}, {name: '霜降', m:10, d:23},
-                {name: '立冬', m:11, d:7}, {name: '小雪', m:11, d:22},
-                {name: '大雪', m:12, d:7}, {name: '冬至', m:12, d:22}
-            ];
+
             var currentTerm = '';
             var nextTerm = '';
-            for (var i = 0; i < solarTerms.length; i++) {
-                var t = solarTerms[i];
-                if (month < t.m || (month === t.m && day < t.d)) {
-                    nextTerm = t.name;
-                    currentTerm = i > 0 ? solarTerms[i - 1].name : solarTerms[solarTerms.length - 1].name;
-                    break;
-                }
-                if (i === solarTerms.length - 1) {
-                    currentTerm = t.name;
-                    nextTerm = solarTerms[0].name;
-                }
-            }
             var shengxiao = '';
-            try {
-                var s = Solar.fromYmd(birthSolarDate.getFullYear(), birthSolarDate.getMonth() + 1, birthSolarDate.getDate());
-                var l = s.getLunar();
-                shengxiao = l.getYearShengXiao();
-            } catch(e) {}
+
+            if (lunarLibAvailable) {
+                try {
+                    var s = Solar.fromYmd(birthSolarDate.getFullYear(), month, day);
+                    var l = s.getLunar();
+                    currentTerm = l.getJieQi() || '';
+                    shengxiao = l.getYearShengXiao();
+
+                    var jieQiTable = l.getJieQiTable();
+                    var jieQiList = l.getJieQiList();
+                    if (jieQiList && jieQiList.length > 0) {
+                        if (!currentTerm) {
+                            for (var i = jieQiList.length - 1; i >= 0; i--) {
+                                var termName = jieQiList[i];
+                                var termSolar = jieQiTable[termName];
+                                if (termSolar) {
+                                    var termDate = new Date(termSolar.getYear(), termSolar.getMonth() - 1, termSolar.getDay());
+                                    if (termDate.getTime() <= birthSolarDate.getTime()) {
+                                        currentTerm = termName;
+                                        nextTerm = jieQiList[(i + 1) % jieQiList.length];
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                            for (var j = 0; j < jieQiList.length; j++) {
+                                if (jieQiList[j] === currentTerm) {
+                                    nextTerm = jieQiList[(j + 1) % jieQiList.length];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            if (!currentTerm) currentTerm = '未知';
+            if (!nextTerm) nextTerm = '未知';
             if (!shengxiao) {
                 var zodiacs = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
                 shengxiao = zodiacs[(birthSolarDate.getFullYear() - 4) % 12];
             }
+
             var el = document.getElementById('seasonInfo');
             el.innerHTML = '<div class="season-main">' + seasons[seasonIndex] + '</div>' +
                 '<div class="season-details">' +
-                '出生节气：' + currentTerm + '（下一个：' + nextTerm + '）<br>' +
+                '出生节气：' + currentTerm + (nextTerm !== '未知' ? '（下一个：' + nextTerm + '）' : '') + '<br>' +
                 '生肖：' + shengxiao + '<br>' +
                 '季节：' + ['春', '夏', '秋', '冬'][seasonIndex] +
                 '</div>';
         }
 
-        // ========== 历史上的今天 ==========
-        var historyCache = {}; // 缓存已获取的数据
-        var historyLoading = false;
+        // ========== 历史上的今天（增强） ==========
+        var historyCache = {};
+        var HISTORY_CAT_LABEL = { china: '中国', world: '世界', science: '科技', culture: '文化', war: '战争', tech: '技术', misc: '杂谈' };
+
+        var MONTH_HISTORY_POOL = {
+            1: [{y:1912,e:'中华民国成立',c:'china'},{y:1949,e:'中国历史翻开新篇章',c:'china'},{y:2002,e:'欧元正式流通',c:'world'},{y:1925,e:'国际儿童年倡议影响深远',c:'culture'}],
+            2: [{y:1848,e:'《共产党宣言》发表',c:'world'},{y:1876,e:'电话专利授予贝尔',c:'tech'},{y:1962,e:'约翰·格伦环绕地球飞行',c:'science'},{y:2004,e:'Facebook上线',c:'tech'}],
+            3: [{y:1879,e:'爱因斯坦诞生',c:'science'},{y:1918,e:'苏俄与德国签订布列斯特条约',c:'war'},{y:1959,e:'芭比娃娃首次亮相',c:'culture'},{y:1989,e:'蒂姆·伯纳斯-李提出万维网构想',c:'tech'}],
+            4: [{y:1968,e:'马丁·路德·金遇刺',c:'world'},{y:1975,e:'微软公司成立',c:'tech'},{y:1994,e:'南非首次多种族大选',c:'world'},{y:2010,e:'苹果发布iPad',c:'tech'}],
+            5: [{y:1818,e:'马克思诞生',c:'world'},{y:1961,e:'美国首次载人航天',c:'science'},{y:1998,e:'欧盟决定发行欧元',c:'world'},{y:2008,e:'汶川大地震',c:'china'}],
+            6: [{y:1944,e:'诺曼底登陆',c:'war'},{y:1967,e:'六日战争爆发',c:'war'},{y:1989,e:'天安门广场民主运动',c:'china'},{y:2016,e:'英国脱欧公投',c:'world'}],
+            7: [{y:1776,e:'美国独立宣言签署',c:'world'},{y:1969,e:'阿波罗11号登月',c:'science'},{y:1937,e:'七七事变',c:'china'},{y:2011,e:'南非末任总统德克勒克逝世',c:'world'}],
+            8: [{y:1945,e:'广岛原子弹爆炸',c:'war'},{y:2008,e:'北京奥运会开幕',c:'china'},{y:1963,e:'马丁·路德·金发表演讲',c:'world'},{y:1991,e:'苏联解体进程加速',c:'world'}],
+            9: [{y:1939,e:'二战爆发',c:'war'},{y:1976,e:'毛泽东逝世',c:'china'},{y:2001,e:'9·11恐怖袭击',c:'world'},{y:2015,e:'屠呦呦获诺贝尔生理学奖',c:'science'}],
+            10: [{y:1949,e:'中华人民共和国成立',c:'china'},{y:1957,e:'斯普特尼克1号发射',c:'science'},{y:1971,e:'中国恢复联合国合法席位',c:'china'},{y:2019,e:'诺贝尔化学奖颁给锂电池研究者',c:'science'}],
+            11: [{y:1918,e:'第一次世界大战结束',c:'war'},{y:1989,e:'柏林墙倒塌',c:'world'},{y:1917,e:'俄国十月革命',c:'world'},{y:2008,e:'奥巴马当选美国总统',c:'world'}],
+            12: [{y:1903,e:'莱特兄弟首次动力飞行',c:'science'},{y:1941,e:'珍珠港事件',c:'war'},{y:1978,e:'十一届三中全会召开',c:'china'},{y:2012,e:'玛雅历法长周期结束引发全球关注',c:'culture'}]
+        };
+
+        var HISTORY_SEED = {
+            '1-1':[{y:1912,e:'中华民国成立',c:'china'},{y:1942,e:'《联合国家宣言》签署',c:'war'},{y:2002,e:'欧元纸币硬币流通',c:'world'}],
+            '1-8':[{y:1935,e:'埃尔维斯·普雷斯利出生',c:'culture'},{y:1959,e:'戴高乐就任法国总统',c:'world'}],
+            '1-15':[{y:2001,e:'维基百科正式上线',c:'tech'},{y:1929,e:'马丁·路德·金出生',c:'world'}],
+            '2-12':[{y:1809,e:'达尔文与林肯同年出生',c:'science'},{y:2001,e:'NEAR探测器首次登陆小行星',c:'science'}],
+            '2-14':[{y:1876,e:'贝尔申请电话专利',c:'tech'},{y:2005,e:'《京都议定书》生效',c:'world'}],
+            '3-8':[{y:1910,e:'国际妇女节起源',c:'culture'},{y:2014,e:'马航MH370失联',c:'world'}],
+            '3-14':[{y:1879,e:'爱因斯坦出生',c:'science'},{y:2018,e:'霍金逝世',c:'science'}],
+            '3-21':[{y:1685,e:'巴赫出生',c:'culture'},{y:1960,e:'沙佩维尔惨案',c:'world'}],
+            '4-1':[{y:1976,e:'苹果公司成立',c:'tech'},{y:2004,e:'谷歌IPO上市',c:'tech'}],
+            '4-12':[{y:1961,e:'加加林首次进入太空',c:'science'},{y:1981,e:'首架航天飞机发射',c:'science'}],
+            '4-22':[{y:1970,e:'第一个地球日',c:'culture'},{y:1529,e:'西班牙与葡萄牙签订托尔德西里亚斯条约',c:'world'}],
+            '4-26':[{y:1986,e:'切尔诺贝利核事故',c:'science'},{y:1920,e:'萨兰斯克建城',c:'world'}],
+            '5-1':[{y:1886,e:'芝加哥工人大罢工',c:'world'},{y:2011,e:'本·拉登被击毙',c:'war'}],
+            '5-4':[{y:1919,e:'五四运动爆发',c:'china'},{y:1979,e:'撒切尔夫人就任英国首相',c:'world'}],
+            '5-12':[{y:1820,e:'南丁格尔出生',c:'science'},{y:2008,e:'汶川大地震',c:'china'}],
+            '6-1':[{y:1925,e:'儿童节确立',c:'culture'},{y:1967,e:'披头士发行《Sgt. Pepper》',c:'culture'}],
+            '6-4':[{y:1989,e:'天安门广场事件',c:'china'},{y:1913,e:'艾米莉·戴维森投身女权运动',c:'world'}],
+            '6-6':[{y:1944,e:'诺曼底登陆 D-Day',c:'war'},{y:1971,e:'《人民日报》发表社论',c:'china'}],
+            '7-1':[{y:1921,e:'中国共产党成立',c:'china'},{y:1997,e:'香港回归祖国',c:'china'}],
+            '7-4':[{y:1776,e:'美国独立宣言签署',c:'world'},{y:1826,e:'杰斐逊与亚当斯同日逝世',c:'world'}],
+            '7-7':[{y:1937,e:'七七事变',c:'china'},{y:2005,e:'伦敦连环爆炸案',c:'world'}],
+            '7-20':[{y:1969,e:'阿波罗11号登月',c:'science'},{y:1944,e:'希特勒暗杀行动失败',c:'war'}],
+            '8-6':[{y:1945,e:'广岛原子弹爆炸',c:'war'},{y:1991,e:'万维网向公众开放',c:'tech'}],
+            '8-8':[{y:2008,e:'北京奥运会开幕',c:'china'},{y:1908,e:'福特T型车开始生产',c:'tech'}],
+            '8-15':[{y:1945,e:'日本宣布投降',c:'war'},{y:1969,e:'伍德斯托克音乐节开幕',c:'culture'}],
+            '9-3':[{y:1945,e:'中国抗日战争胜利纪念日',c:'china'},{y:1783,e:'英美巴黎条约签署',c:'world'}],
+            '9-9':[{y:1976,e:'毛泽东逝世',c:'china'},{y:1850,e:'加利福尼亚加入美国',c:'world'}],
+            '9-11':[{y:2001,e:'美国9·11恐怖袭击',c:'war'},{y:1973,e:'智利政变',c:'world'}],
+            '9-18':[{y:1931,e:'九一八事变',c:'china'},{y:1980,e:'铁娘子撒切尔夫人政策影响深远',c:'world'}],
+            '10-1':[{y:1949,e:'中华人民共和国成立',c:'china'},{y:1964,e:'日本新干线通车',c:'tech'}],
+            '10-4':[{y:1957,e:'斯普特尼克1号升空',c:'science'},{y:1992,e:'巴西里约地球峰会闭幕',c:'world'}],
+            '10-10':[{y:1911,e:'辛亥革命爆发',c:'china'},{y:2010,e:'智利矿工救援成功',c:'world'}],
+            '10-24':[{y:1945,e:'联合国成立',c:'world'},{y:1990,e:'意大利加入申根区',c:'world'}],
+            '11-9':[{y:1989,e:'柏林墙倒塌',c:'world'},{y:1938,e:'水晶之夜',c:'war'}],
+            '11-11':[{y:1918,e:'第一次世界大战结束',c:'war'},{y:2004,e:'阿拉法特逝世',c:'world'}],
+            '12-7':[{y:1941,e:'珍珠港事件',c:'war'},{y:1972,e:'阿波罗17号登月',c:'science'}],
+            '12-9':[{y:1935,e:'一二·九运动',c:'china'},{y:1968,e:'《东京公约》签署',c:'world'}],
+            '12-13':[{y:1937,e:'南京大屠杀',c:'china'},{y:2003,e:'萨达姆·侯赛因被捕',c:'war'}],
+            '12-20':[{y:1999,e:'澳门回归祖国',c:'china'},{y:1803,e:'路易斯安那购地案完成',c:'world'}],
+            '12-25':[{y:1642,e:'牛顿出生',c:'science'},{y:1991,e:'戈尔巴乔夫辞职苏联解体',c:'world'}],
+            '12-26':[{y:1893,e:'毛泽东出生',c:'china'},{y:2004,e:'印度洋大海啸',c:'world'}]
+        };
+
+        function getEnhancedStaticHistory(month, day) {
+            var key = month + '-' + day;
+            var list = [];
+            if (HISTORY_SEED[key]) {
+                for (var i = 0; i < HISTORY_SEED[key].length; i++) list.push(HISTORY_SEED[key][i]);
+            }
+            var pool = MONTH_HISTORY_POOL[month] || MONTH_HISTORY_POOL[1];
+            list.push(pool[(day - 1) % pool.length]);
+            list.push(pool[day % pool.length]);
+            list.push({ y: 0, e: month + '月' + day + '日，世界仍在向前，历史在每分每秒中书写', c: 'culture' });
+            return dedupeHistory(list).slice(0, 8);
+        }
+
+        function dedupeHistory(list) {
+            var seen = {};
+            var out = [];
+            for (var i = 0; i < list.length; i++) {
+                var k = (list[i].y || '') + '|' + list[i].e;
+                if (!seen[k]) { seen[k] = 1; out.push(list[i]); }
+            }
+            return out.sort(function(a, b) { return (b.y || 0) - (a.y || 0); });
+        }
+
+        function mergeHistoryLists(a, b) {
+            return dedupeHistory((a || []).concat(b || [])).slice(0, 10);
+        }
+
+        function normalizeHistoryItem(item) {
+            if (!item.c) item.c = 'world';
+            return item;
+        }
 
         function updateHistory() {
             if (!birthSolarDate) return;
@@ -2157,85 +2794,27 @@
             var key = month + '-' + day;
             var el = document.getElementById('historyInfo');
 
-            // 如果已有缓存，直接渲染
-            if (historyCache[key]) {
-                renderHistory(el, historyCache[key], month, day);
+            if (historyCache[key] && historyCache[key].final) {
+                renderHistory(el, historyCache[key].list, month, day, historyCache[key].source);
                 return;
             }
 
-            // 显示加载状态
-            el.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">加载中...</div>';
+            var staticData = getEnhancedStaticHistory(month, day);
+            renderHistory(el, staticData, month, day, 'local');
 
-            // 优先级1：mxnzp 国内 API（仅支持当天日期）
-            var now = new Date();
-            var isToday = (month === now.getMonth() + 1 && day === now.getDate());
-            if (isToday) {
-                fetchMxnzpHistory(month, day, function(data) {
-                    if (data && data.length > 0) {
-                        historyCache[key] = data;
-                        renderHistory(el, data, month, day);
-                    } else {
-                        fetchHistoryFallback(month, day, el, key);
-                    }
+            fetchWikipediaHistory(month, day, function(apiData) {
+                var merged = mergeHistoryLists(staticData, apiData);
+                var source = apiData && apiData.length ? 'merged' : 'local';
+                historyCache[key] = { list: merged, source: source, final: !apiData };
+                renderHistory(el, merged, month, day, source);
+                if (!apiData) return;
+                fetchZenquotesHistory(month, day, function(api2) {
+                    merged = mergeHistoryLists(merged, api2);
+                    source = api2 && api2.length ? 'online' : source;
+                    historyCache[key] = { list: merged, source: source, final: true };
+                    renderHistory(el, merged, month, day, source);
                 });
-            } else {
-                fetchHistoryFallback(month, day, el, key);
-            }
-        }
-
-        function fetchHistoryFallback(month, day, el, key) {
-            // 优先级2：Wikipedia 中文 API
-            fetchWikipediaHistory(month, day, function(data) {
-                if (data && data.length > 0) {
-                    historyCache[key] = data;
-                    renderHistory(el, data, month, day);
-                } else {
-                    // 优先级3：zenquotes API
-                    fetchZenquotesHistory(month, day, function(data2) {
-                        if (data2 && data2.length > 0) {
-                            historyCache[key] = data2;
-                            renderHistory(el, data2, month, day);
-                        } else {
-                            // 优先级4：静态数据兜底
-                            var staticData = getStaticHistory(key);
-                            historyCache[key] = staticData;
-                            renderHistory(el, staticData, month, day);
-                        }
-                    });
-                }
             });
-        }
-
-        function fetchMxnzpHistory(month, day, callback) {
-            try {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'https://www.mxnzp.com/api/history/today?type=0&app_id=venqtrqrvhsttwbe&app_secret=wMDg8cJdXXxG9xmvlqGk98FenM6WSg5E', true);
-                xhr.timeout = 5000;
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4) {
-                        if (xhr.status === 200) {
-                            try {
-                                var json = JSON.parse(xhr.responseText);
-                                if (json.code === 1 && json.data && json.data.length > 0) {
-                                    var result = [];
-                                    for (var i = 0; i < Math.min(json.data.length, 8); i++) {
-                                        var item = json.data[i];
-                                        result.push({ y: parseInt(item.year) || 0, e: item.title || '' });
-                                    }
-                                    callback(result);
-                                } else {
-                                    callback(null);
-                                }
-                            } catch(e) { callback(null); }
-                        } else {
-                            callback(null);
-                        }
-                    }
-                };
-                xhr.ontimeout = function() { callback(null); };
-                xhr.onerror = function() { callback(null); };
-                xhr.send();
-            } catch(e) { callback(null); }
         }
 
         function fetchWikipediaHistory(month, day, callback) {
@@ -2258,9 +2837,9 @@
                                     // 提取年份
                                     var yearMatch = text.match(/^(-?\d+)\s*(.*)/);
                                     if (yearMatch) {
-                                        result.push({ y: parseInt(yearMatch[1]), e: yearMatch[2] });
+                                        result.push(normalizeHistoryItem({ y: parseInt(yearMatch[1]), e: yearMatch[2], c: 'world' }));
                                     } else {
-                                        result.push({ y: 0, e: text });
+                                        result.push(normalizeHistoryItem({ y: 0, e: text, c: 'world' }));
                                     }
                                 }
                                 callback(result);
@@ -2294,9 +2873,9 @@
                                     // 提取年份
                                     var yearMatch = text.match(/^(-?\d+)\s*[–\-—]\s*(.*)/);
                                     if (yearMatch) {
-                                        result.push({ y: parseInt(yearMatch[1]), e: yearMatch[2] });
+                                        result.push(normalizeHistoryItem({ y: parseInt(yearMatch[1]), e: yearMatch[2], c: 'world' }));
                                     } else {
-                                        result.push({ y: 0, e: text });
+                                        result.push(normalizeHistoryItem({ y: 0, e: text, c: 'world' }));
                                     }
                                 }
                                 callback(result);
@@ -2312,48 +2891,30 @@
             } catch(e) { callback(null); }
         }
 
-        function getStaticHistory(key) {
-            var events = {
-                '1-1': [{y:1912, e:'中华民国成立'},{y:1942, e:'《联合国家宣言》签署'},{y:2002, e:'欧元纸币和硬币正式流通'}],
-                '1-15': [{y:2001, e:'维基百科正式上线'}],
-                '2-12': [{y:1809, e:'查尔斯·达尔文出生'},{y:1809, e:'亚伯拉罕·林肯出生'}],
-                '3-14': [{y:1879, e:'阿尔伯特·爱因斯坦出生'},{y:2018, e:'斯蒂芬·霍金逝世'}],
-                '4-1': [{y:1976, e:'苹果公司成立'},{y:2004, e:'谷歌IPO上市'}],
-                '4-12': [{y:1961, e:'人类首次进入太空（加加林）'}],
-                '4-22': [{y:1970, e:'第一个地球日'}],
-                '5-1': [{y:1886, e:'芝加哥工人大罢工'},{y:2011, e:'本·拉登被击毙'}],
-                '5-5': [{y:1818, e:'卡尔·马克思出生'}],
-                '5-12': [{y:1820, e:'弗洛伦斯·南丁格尔出生'}],
-                '6-1': [{y:1925, e:'儿童节正式确立'}],
-                '6-6': [{y:1944, e:'诺曼底登陆（D-Day）'}],
-                '7-4': [{y:1776, e:'美国独立宣言签署'}],
-                '7-20': [{y:1969, e:'阿波罗11号登月'}],
-                '8-8': [{y:2008, e:'北京奥运会开幕'}],
-                '9-11': [{y:2001, e:'美国9·11事件'}],
-                '10-1': [{y:1949, e:'中华人民共和国成立'},{y:1964, e:'日本新干线通车'}],
-                '10-4': [{y:1957, e:'人造卫星首次升空（斯普特尼克1号）'}],
-                '10-24': [{y:1945, e:'联合国成立'}],
-                '11-9': [{y:1989, e:'柏林墙倒塌'}],
-                '11-11': [{y:1918, e:'第一次世界大战结束'}],
-                '12-1': [{y:1955, e:'罗莎·帕克斯拒绝让座事件'}],
-                '12-10': [{y:1948, e:'《世界人权宣言》通过'}],
-                '12-17': [{y:1903, e:'莱特兄弟首次飞行'}],
-                '12-25': [{y:1642, e:'艾萨克·牛顿出生'}]
+        function renderHistory(el, list, month, day, source) {
+            var sourceText = {
+                local: '📚 本地精选',
+                merged: '🌐 本地 + 网络',
+                online: '🌐 在线补充'
             };
-            return events[key] || [];
-        }
-
-        function renderHistory(el, list, month, day) {
             if (!list || list.length === 0) {
-                el.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">' +
-                    '📅 ' + month + '月' + day + '日<br><br>这一天在历史上留下了属于你的印记 🌟</div>';
+                el.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">📅 ' +
+                    month + '月' + day + '日<br><br>这一天在历史上留下了属于你的印记 🌟</div>';
                 return;
             }
-            var html = '';
+            var html = '<div class="history-meta"><span>📅 ' + month + '月' + day + '日 · ' + list.length + ' 条事件</span>' +
+                '<span class="history-source">' + (sourceText[source] || '') + '</span></div><div class="history-timeline">';
             for (var i = 0; i < list.length; i++) {
-                var yearStr = list[i].y ? list[i].y + '年' : '';
-                html += '<div class="history-item"><span class="history-year">' + yearStr + '</span>' + list[i].e + '</div>';
+                var item = list[i];
+                var cat = item.c || 'misc';
+                var catLabel = HISTORY_CAT_LABEL[cat] || '杂谈';
+                var yearStr = item.y ? (item.y + '年') : '';
+                html += '<div class="history-item">' +
+                    '<span class="history-cat ' + cat + '">' + catLabel + '</span>' +
+                    (yearStr ? '<span class="history-year">' + yearStr + '</span>' : '') +
+                    item.e + '</div>';
             }
+            html += '</div>';
             el.innerHTML = html;
         }
 
@@ -2611,6 +3172,208 @@
             el.innerHTML = html;
         }
 
+        // ========== 出生信息 ==========
+        function updateBirthInfo() {
+            if (!birthSolarDate) return;
+            var hasTime = birthHour >= 0;
+            var timeZhi = '未提供';
+            var timeSub = '填写出生时间可查看时辰';
+            var festivalStr = '—';
+
+            if (lunarLibAvailable) {
+                try {
+                    var solar = getBirthSolarObj();
+                    var lunar = solar.getLunar();
+                    if (hasTime) {
+                        timeZhi = lunar.getTimeZhi() + '时';
+                        timeSub = lunar.getTimeInGanZhi() + ' · ' + getShiChenRange(birthHour);
+                    }
+                    var festivals = (solar.getFestivals() || []).concat(lunar.getFestivals() || []);
+                    festivalStr = festivals.length > 0 ? festivals.join('、') : '无特殊节日';
+                } catch (e) {
+                    festivalStr = '无特殊节日';
+                }
+            } else if (hasTime) {
+                timeZhi = getShiChenName(birthHour);
+                timeSub = getShiChenRange(birthHour);
+            }
+
+            document.getElementById('birthInfoGrid').innerHTML =
+                '<div class="birth-info-item"><div class="bi-label">出生时辰</div><div class="bi-value">' + timeZhi + '</div><div class="bi-sub">' + timeSub + '</div></div>' +
+                '<div class="birth-info-item"><div class="bi-label">当日节日</div><div class="bi-value" style="font-size:0.95rem">' + festivalStr + '</div><div class="bi-sub">阳历/农历节日</div></div>' +
+                '<div class="birth-info-item"><div class="bi-label">年代标签</div><div class="bi-value">' + getGenerationLabel(birthSolarDate.getFullYear()) + '</div><div class="bi-sub">' + getSeasonLabel(birthSolarDate.getMonth() + 1) + '出生</div></div>' +
+                '<div class="birth-info-item"><div class="bi-label">总周数</div><div class="bi-value">' + Math.floor((new Date().getTime() - birthSolarDate.getTime()) / 604800000) + ' 周</div><div class="bi-sub">至今已度过</div></div>';
+        }
+
+        function getGenerationLabel(year) {
+            if (year >= 2010) return '10后';
+            if (year >= 2000) return '00后';
+            if (year >= 1990) return '90后';
+            if (year >= 1980) return '80后';
+            if (year >= 1970) return '70后';
+            if (year >= 1960) return '60后';
+            return year + '年代';
+        }
+
+        function getSeasonLabel(month) {
+            if (month >= 3 && month <= 5) return '春季';
+            if (month >= 6 && month <= 8) return '夏季';
+            if (month >= 9 && month <= 11) return '秋季';
+            return '冬季';
+        }
+
+        // ========== 干支八字 ==========
+        function updateBazi() {
+            if (!birthSolarDate) return;
+            if (!lunarLibAvailable) {
+                document.getElementById('baziPillars').innerHTML =
+                    '<div class="bazi-pillar missing" style="grid-column:1/-1"><div class="bp-ganzhi">农历库未加载</div><div class="bp-nayin">请联网后刷新</div></div>';
+                document.getElementById('baziSummary').textContent = '干支八字需要农历库支持';
+                return;
+            }
+            var solar = getBirthSolarObj();
+            var eightChar = solar.getLunar().getEightChar();
+            var hasTime = birthHour >= 0;
+            var pillars = [
+                { label: '年柱', gz: eightChar.getYear(), ny: eightChar.getYearNaYin() },
+                { label: '月柱', gz: eightChar.getMonth(), ny: eightChar.getMonthNaYin() },
+                { label: '日柱', gz: eightChar.getDay(), ny: eightChar.getDayNaYin() },
+                { label: '时柱', gz: hasTime ? eightChar.getTime() : null, ny: hasTime ? eightChar.getTimeNaYin() : null }
+            ];
+            var html = '';
+            for (var i = 0; i < pillars.length; i++) {
+                var p = pillars[i];
+                var miss = !p.gz;
+                html += '<div class="bazi-pillar' + (miss ? ' missing' : '') + '">' +
+                    '<div class="bp-label">' + p.label + '</div>' +
+                    '<div class="bp-ganzhi">' + (miss ? '待填写' : p.gz) + '</div>' +
+                    '<div class="bp-nayin">' + (miss ? '出生时间' : p.ny) + '</div></div>';
+            }
+            document.getElementById('baziPillars').innerHTML = html;
+            document.getElementById('baziSummary').textContent = hasTime
+                ? eightChar.toString() + ' · 日主「' + eightChar.getDay() + '」'
+                : eightChar.getYear() + ' ' + eightChar.getMonth() + ' ' + eightChar.getDay() + ' · 填写出生时间可推算时柱';
+        }
+
+        // ========== 人生里程碑 ==========
+        function updateMilestones(now) {
+            if (!birthSolarDate) return;
+            var list = [
+                { name: '18 岁 · 成年', icon: '🎓', type: 'age', value: 18 },
+                { name: '30 岁 · 而立', icon: '🌟', type: 'age', value: 30 },
+                { name: '60 岁 · 退休', icon: '🏖️', type: 'age', value: 60 },
+                { name: '10000 天', icon: '🎯', type: 'days', value: 10000 },
+                { name: '100 岁 · 期颐', icon: '🎋', type: 'age', value: 100 }
+            ];
+            var html = '';
+            for (var i = 0; i < list.length; i++) {
+                var ms = list[i];
+                var target;
+                if (ms.type === 'days') {
+                    target = new Date(birthSolarDate.getTime() + ms.value * 86400000);
+                } else {
+                    target = new Date(birthSolarDate.getTime());
+                    target.setFullYear(target.getFullYear() + ms.value);
+                }
+                var daysLeft = Math.ceil((target.getTime() - now.getTime()) / 86400000);
+                var dateStr = target.getFullYear() + '年' + (target.getMonth() + 1) + '月' + target.getDate() + '日';
+                var itemCls = 'upcoming', statusCls = 'upcoming', statusText;
+                if (daysLeft <= 0) {
+                    itemCls = 'done'; statusCls = 'done'; statusText = '✓ 已达成';
+                } else if (daysLeft <= 30) {
+                    itemCls = 'soon'; statusCls = 'soon'; statusText = '还有 ' + daysLeft + ' 天';
+                } else {
+                    statusText = '还有 ' + daysLeft + ' 天';
+                }
+                html += '<div class="milestone-item ' + itemCls + '"><div class="ms-icon">' + ms.icon + '</div>' +
+                    '<div class="ms-body"><div class="ms-name">' + ms.name + '</div><div class="ms-date">' + dateStr + '</div></div>' +
+                    '<div class="ms-status ' + statusCls + '">' + statusText + '</div></div>';
+            }
+            document.getElementById('milestoneList').innerHTML = html;
+        }
+
+        // ========== 生日庆祝 ==========
+        function checkCelebration(solarToday, lunarToday, nextAge) {
+            if (!solarToday && !lunarToday) return;
+            var key = 'celebration_' + new Date().toISOString().slice(0, 10);
+            if (sessionStorage.getItem(key)) return;
+            var msg;
+            if (solarToday && lunarToday) msg = '今天是你的阳历和农历生日，祝你 ' + nextAge + ' 岁生日快乐！';
+            else if (solarToday) msg = '今天是你的阳历生日，祝你 ' + nextAge + ' 岁生日快乐！';
+            else msg = '今天是你的农历生日，祝你生日快乐，万事顺意！';
+            document.getElementById('celebrationTitle').textContent = '🎂 生日快乐！';
+            document.getElementById('celebrationMsg').textContent = msg;
+            document.getElementById('celebrationOverlay').classList.add('active');
+            launchConfetti();
+            playBirthdaySound();
+            sessionStorage.setItem(key, '1');
+        }
+
+        function playBirthdaySound() {
+            try {
+                var Ctx = window.AudioContext || window.webkitAudioContext;
+                if (!Ctx) return;
+                var ctx = new Ctx();
+                var notes = [523.25, 659.25, 783.99, 1046.5];
+                for (var i = 0; i < notes.length; i++) {
+                    (function(freq, idx) {
+                        var osc = ctx.createOscillator();
+                        var gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        var t0 = ctx.currentTime + idx * 0.18;
+                        gain.gain.setValueAtTime(0.0001, t0);
+                        gain.gain.exponentialRampToValueAtTime(0.12, t0 + 0.05);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.35);
+                        osc.start(t0);
+                        osc.stop(t0 + 0.36);
+                    })(notes[i], i);
+                }
+            } catch (e) {}
+        }
+
+        function hideCelebration(e) {
+            if (e && e.target && e.target.classList && e.target.classList.contains('celebration-box')) return;
+            document.getElementById('celebrationOverlay').classList.remove('active');
+            var pieces = document.querySelectorAll('.confetti-piece');
+            for (var i = 0; i < pieces.length; i++) {
+                if (pieces[i].parentNode) pieces[i].parentNode.removeChild(pieces[i]);
+            }
+        }
+
+        function launchConfetti() {
+            var colors = ['#e94560', '#ffc107', '#00d2a0', '#4fc3f7', '#9c27b0'];
+            for (var i = 0; i < 60; i++) {
+                (function(idx) {
+                    setTimeout(function() {
+                        var el = document.createElement('div');
+                        el.className = 'confetti-piece';
+                        el.style.left = (Math.random() * 100) + 'vw';
+                        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+                        el.style.animationDuration = (2 + Math.random() * 2) + 's';
+                        el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                        document.body.appendChild(el);
+                        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 4500);
+                    }, idx * 35);
+                })(i);
+            }
+        }
+
+        // ========== 二维码分享 ==========
+        function showQrModal() {
+            if (!birthSolarDate) { showDateError('请先选择有效的出生日期'); return; }
+            var url = encodeURIComponent(buildShareUrl());
+            document.getElementById('qrImage').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + url;
+            document.getElementById('qrModal').classList.add('active');
+        }
+
+        function hideQrModal(e) {
+            if (e && e.target && e.target.classList && e.target.classList.contains('qr-box')) return;
+            document.getElementById('qrModal').classList.remove('active');
+        }
+
         // ========== Theme Toggle ==========
         var userTheme = null; // null=跟随系统, 'light'=亮色, 'dark'=暗色
 
@@ -2623,7 +3386,7 @@
 
         function applyTheme(theme) {
             var body = document.body;
-            var btn = document.querySelector('.theme-toggle');
+            var btn = document.getElementById('themeToggle');
             // Disable transitions for instant theme switch
             body.classList.add('no-transition');
             if (theme === 'light') {
